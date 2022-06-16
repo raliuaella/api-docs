@@ -1,0 +1,9 @@
+{
+    "AppTitle":"Ussd Wallet funding",
+    "version":"v1",
+    "Description":"App Description",
+    "BaseUrl":"https://ussd.aellapp.com/",
+    "Headers":{
+        
+    }
+}

@@ -1,0 +1,63 @@
+// ************************** EPIC ************************************************
+    AutoGenerate Api Docs/Postman Collection/Confluence Documentation on fly
+// ************************** EPIC ************************************************
+
+
+
+                        Thought Process
+****************************************************************************************
+1) scan entire directory from root of the project. (work with gitignore and automatically exclude all files in it)
+    a) in each file,check for comment that begins with /// and matches schema defined
+    b) format is in Resource/DefinitionName=Value where value can be anything and Resource/Definition must be within predefined/configured schema for the project
+    c) check if params or query is None/not
+    d) check for method name
+    e) check for body parameters - and automatically take the body and put it in the request of the Collection
+    f) check for header values
+    g) check for authorization
+2) from the (1) above automatically generate postman link/collections to the root of the project
+
+
+3) so help me Lord.
+
+
+****************************************************************************************
+                                    LEXER
+****************************************************************************************
+Lexer Rule
+-   Each line in a file must alaways begin with /// (this (///) type of comment style)
+-   To generate tokens (output of lexer), some restrictions/rules must be followed
+        - if class or method is marked with ControllerName=SomeValue, it uses this to build the route
+            i.e. it appends the controller name after the baseurl
+                ====== == Sample Values for ControllerName ==============
+                default-> takes the name of class/method (if immediately follwed by class it does not use function or arrow function)
+                sampleone-> ControllerName=/User/UserController(it ignores the word controller)
+                sampletow-> ControllerName=/api/v1/User (this should not container the controller anymore since it has url path format)
+                samplethree -> @Controller('path') -> this cannot have the controller in it anymore but can also be in path format
+        - if you dont want to follow above, the following must be adhered to    
+                - each line must begin with ///
+                - you must specify method or class as @Route('path to route') -> this will be appended to the baseUrl
+                - please note that the route defined in above step must be unique accross your project
+- for declaring methods and http methods, the following must be followed  
+    - each line must begin with /// otherwise the line is ignore
+    - MethodName=(GET,someValue, query=null, params) -> this method must be unique within the same defining file otherwise an exception will occur
+    - if you dont want to follow the above step, methods can be defined as  
+        - @Method(HTTPMETHOD, 'name/path', query, params) -> query/params can be null/empty object, query and params must be in object format
+            sample @Method(GET, 'wallet/fund', {userid=2,location=en}, {})
+- headers is defined at global level, but once header is defined at method level, it takes precedence over the global value defined
+- to declare headers, this following must be followed
+    - it must be an object in the form Header={} or @header({})
+
+
+****************************************************************************************
+
+/// ControllerName=Wallet
+///
+///
+///
+///
+/// MethodName=UssdString
+/// Body={}
+/// HttpMethod=get
+/// query={}
+/// param={}
+///

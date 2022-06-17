@@ -143,7 +143,7 @@ const lexer = (inputs) => {
                     tokens.push({
                         KeyName: splitCurrentValue[0],
                         KeyDataType: 'string',
-                        KeyValue: splitCurrentValue[1],
+                        KeyValue: splitCurrentValue[1].replace('(', '').replace(')', '').replace(/[\']=?/, ''),
                         "TokenType": LexerTokenTypes_1.LexerTokenTypes.Controller,
                         ControllerPath,
                         Headers: null

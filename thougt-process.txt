@@ -61,3 +61,5 @@ Lexer Rule
 /// query={}
 /// param={}
 ///
+
+/// to be integrated with MkDocs (full time automation is here)

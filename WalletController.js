@@ -16,8 +16,8 @@ class WalletFundingController {
     constructor() {
         //this.serviceName = this.config.get<string>('SERVICE_NAME');
     }
-    // (reuestname,httpmethod,query,params,body,header)
-    /// MethodName=(BankLisiting;GET;'v2/bank-listing';null;null;null,null)
+    // (reuestname,httpmethod,url,query,params,body,header)
+    /// MethodName=(BankLisiting;GET;'v2/bank-listing';{pageIndex:1,pageSize:10};null;null;null)
     BankShortCodeListing() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log("data returned")

@@ -3,5 +3,7 @@ export type ApiDocsOptions = {
     Description?: string | null | undefined,
     version?: string | null | undefined,
     BaseUrl: string | null | undefined,
-    Headers?: object | null | undefined
+    Headers?: object | null | undefined,
+    Host?: string | null | undefined,
+    BasePath?: string | null | undefined
 }

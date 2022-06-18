@@ -54,8 +54,8 @@ class WalletFundingController {
     // @Post('customer-details')
     // @UseGuards(AuthGuard('basic'))
     /// MethodName=(GetCustomerDetails;POST;'api/customer-details';{};{};{};null)
-    /// Consumes=([application/json,application/xml])
-    /// Produces=([application/json,text/csv])
+    /// @Consumes([application/json,application/xml])
+    /// @Produces([application/json,text/csv])
     GetCustomerDetails() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('get customer details ' + JSON.stringify(body));

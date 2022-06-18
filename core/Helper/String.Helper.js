@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateTokenId = exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
+exports.generateTokenId = exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.getAllTokenValues = exports.alllinesThatBeginWith = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
 const crypto_1 = require("crypto");
 const os_1 = require("os");
 const NotNull = (target, propertyName, parameterIndex) => {
@@ -38,6 +38,51 @@ const parseQuery = (input) => {
     // return outputstring
 };
 exports.parseQuery = parseQuery;
+const alllinesThatBeginWith = (testChar, inputs) => {
+    const newLinesRegex = new RegExp(testChar);
+    let matchStrings = [];
+    for (let input of inputs) {
+        input = input.trim();
+        //console.log(input)
+        const isMatch = newLinesRegex.test(input);
+        if (isMatch || input.startsWith('///'))
+            matchStrings.push(input);
+    }
+    return matchStrings;
+};
+exports.alllinesThatBeginWith = alllinesThatBeginWith;
+const getAllTokenValues = (inputs) => {
+    const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes']$/ig;
+    const regex = new RegExp(matchString);
+    let response = [];
+    for (let input of inputs) {
+        input = input.replace(/^\/\/\//g, '');
+        const matchedIndex = 0;
+        //  console.log(input)
+        const splitInput = input.split("=");
+        //console.log(splitInput)
+        if (splitInput.length == 2) {
+            const value = {
+                type: splitInput[0].trim(),
+                value: splitInput[1].replace(/[\(,\)]/g, '')
+            };
+            response.push(value);
+        }
+        if (splitInput.length == 1) {
+            const resplit = splitInput[0].split('(');
+            // console.log(resplit[1])
+            if (resplit.length > 1) {
+                const value = {
+                    type: resplit[0].trim().replace('@', ''),
+                    value: resplit[1].replace(/\)/g, '')
+                };
+                response.push(value);
+            }
+        }
+    }
+    return response;
+};
+exports.getAllTokenValues = getAllTokenValues;
 const parseParams = (input) => {
     const inputParseObject = input.replace(/[\']+?/, '').replace('(', '').replace(')', '');
     const parsedObject = inputParseObject;

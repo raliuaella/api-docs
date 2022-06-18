@@ -16,7 +16,8 @@ const Parser = (inputs, baseOptions) => {
         currentControllers.forEach((v) => {
             const methodNameUrl = typeof (v.KeyValue) == "object" ? v.KeyValue["path"] : v.KeyValue;
             // construct url (append controller path with method path)
-            let fullUrl = (0, String_Helper_1.JoinWith)('/', baseOptions === null || baseOptions === void 0 ? void 0 : baseOptions.BaseUrl, v.ControllerPath, methodNameUrl).replace(/\'\'+/g, '').replace(/[\']+/g, '').replace('(', '').replace(')', '');
+            // <string>baseOptions?.BaseUrl,
+            let fullUrl = (0, String_Helper_1.JoinWith)('/', v.ControllerPath, methodNameUrl).replace(/\'\'+/g, '').replace(/[\']+/g, '').replace('(', '').replace(')', '');
             const query = v.KeyDataType.toLowerCase() == 'object' ? v.KeyValue["query"] : null;
             const params = v.KeyDataType.toLowerCase() == 'object' ? v.KeyValue["params"] : null;
             const paramsIsNull = (0, String_Helper_1.StringIsNullOrEmpty)(params);
@@ -28,6 +29,7 @@ const Parser = (inputs, baseOptions) => {
             if (!queryIsNull && paramsIsNull)
                 fullUrl += (0, String_Helper_1.parseQuery)(query);
             console.log("full url ", fullUrl);
+            v.FullUrl = fullUrl;
             const header = (v.Headers ?
                 v.Headers.replace('{', '').replace('}', '').replace(/[\']+?/, '') : null);
             console.log("headers ", header);

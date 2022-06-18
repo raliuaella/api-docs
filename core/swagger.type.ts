@@ -1,7 +1,7 @@
 export type Swagger = {
     swagger?: string,
     info: object,
-    tags: Array<SwaggerTags>,
+    tags?: Array<SwaggerTags>,
     schemes?: Array<string>
 }
 

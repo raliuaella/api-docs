@@ -1,3 +1,5 @@
+import { createHash, randomBytes } from "crypto";
+import { hostname } from "os";
 import { LexerTokens } from "../lexer/LexerTokens.type";
 
 export const NotNull = (target: any, propertyName: string, parameterIndex:number) => {
@@ -78,3 +80,17 @@ export const unique = (inputs: LexerTokens[]): LexerTokens[]=> {
 
     return resp
 }
+
+const maxLength = 36;
+const host = createHash('md5').update(hostname()).digest('hex').substring(0, 6); // 6 xters
+const service = 'USSD'; // service name, 3 xters
+const processId = ('' + process.pid).padStart(3, '0'); // 3 xters
+export const generateTokenId = () => {
+  const time = new Date().getTime(); // 13 xters
+  const wildcard = randomBytes(256 / 8)
+    .toString('hex')
+    .substring(0, 7); // 7 xters
+  return `${time}-${host}-${service}-${processId}-${wildcard}`
+    .substring(0, maxLength)
+    .toUpperCase();
+};

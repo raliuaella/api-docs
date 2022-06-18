@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
+exports.generateTokenId = exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
+const crypto_1 = require("crypto");
+const os_1 = require("os");
 const NotNull = (target, propertyName, parameterIndex) => {
     let descriptor = {};
     let value = descriptor.value;
@@ -64,3 +66,17 @@ const unique = (inputs) => {
     return resp;
 };
 exports.unique = unique;
+const maxLength = 36;
+const host = (0, crypto_1.createHash)('md5').update((0, os_1.hostname)()).digest('hex').substring(0, 6); // 6 xters
+const service = 'USSD'; // service name, 3 xters
+const processId = ('' + process.pid).padStart(3, '0'); // 3 xters
+const generateTokenId = () => {
+    const time = new Date().getTime(); // 13 xters
+    const wildcard = (0, crypto_1.randomBytes)(256 / 8)
+        .toString('hex')
+        .substring(0, 7); // 7 xters
+    return `${time}-${host}-${service}-${processId}-${wildcard}`
+        .substring(0, maxLength)
+        .toUpperCase();
+};
+exports.generateTokenId = generateTokenId;

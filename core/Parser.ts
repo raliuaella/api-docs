@@ -19,7 +19,8 @@ export const Parser = (inputs: LexerTokens[], baseOptions: ApiDocsOptions): obje
         currentControllers.forEach((v: LexerTokens)=>{
             const methodNameUrl = typeof(v.KeyValue) == "object" ? v.KeyValue["path"]: v.KeyValue
             // construct url (append controller path with method path)
-            let fullUrl = JoinWith('/', <string>baseOptions?.BaseUrl, v.ControllerPath, methodNameUrl).replace(/\'\'+/g, '').replace(/[\']+/g, '').replace('(', '').replace(')', '')
+            // <string>baseOptions?.BaseUrl,
+            let fullUrl = JoinWith('/',  v.ControllerPath, methodNameUrl).replace(/\'\'+/g, '').replace(/[\']+/g, '').replace('(', '').replace(')', '')
 
             const query = v.KeyDataType.toLowerCase() == 'object' ? v.KeyValue["query"]:null
             const params = v.KeyDataType.toLowerCase() == 'object' ? v.KeyValue["params"]:null
@@ -37,6 +38,8 @@ export const Parser = (inputs: LexerTokens[], baseOptions: ApiDocsOptions): obje
                 fullUrl += parseQuery(query);
            
             console.log("full url ", fullUrl)
+
+            v.FullUrl = fullUrl
 
            const header: string = (v.Headers ? 
                             (v.Headers as string).replace('{','').replace('}', '').replace(/[\']+?/, ''): null) as string

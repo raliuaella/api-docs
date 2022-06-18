@@ -8,6 +8,7 @@
   
    // (reuestname,httpmethod,url,query,params,body,header)
    /// MethodName=(BankLisiting;GET;'v2/bank-listing';{pageIndex:1,pageSize:10};null;null;null)
+   /// @Produces([application/json])
     async BankShortCodeListing() {
        // console.log("data returned")
      // return SuccessResponse(res, await this.service.ListBanks(), this.serviceName);
@@ -15,6 +16,7 @@
   
     //@Post('ussd-string')
     /// MethodName=(getUssdString;POST;'api/ussd-string';{};{userid:1};{amount:5000,userid:454,bankCode:322};{})
+    /// @Consumes([application/json,application/xml])
     async GetUssdString() {
       console.log(
         'generate ussd-session-string-initiated at' + new Date().toString(),
@@ -46,6 +48,8 @@
    // @Post('customer-details')
    // @UseGuards(AuthGuard('basic'))
    /// MethodName=(GetCustomerDetails;POST;'api/customer-details';{};{};{};null)
+   /// Consumes=([application/json,application/xml])
+   /// Produces=([application/json,text/csv])
     async GetCustomerDetails() {
      // console.log('get customer details ' + JSON.stringify(body));
     //   const serviceResponse: UserDetailsResponseDTO =

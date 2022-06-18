@@ -105,7 +105,7 @@ const lexer = (inputs) => {
         }
         if (type == LexerTokenTypes_1.LexerTokenTypes.Query.toString().toUpperCase()) {
             const KeyValue = (0, String_Helper_1.simpleStringToObject)(value);
-            console.log("keyValue ", KeyValue);
+            //console.log("keyValue ", KeyValue)
             currentToken.Query = KeyValue;
             const indexOfTokenToUpdate = tokens.findIndex(x => x._id == currentToken._id);
             //tokens.push(token)
@@ -126,7 +126,7 @@ const lexer = (inputs) => {
                 _id,
                 RequestName: methodKeyValue[0],
                 KeyName: type,
-                KeyDataType: 'object',
+                KeyDataType: typeof (Object).name,
                 KeyValue: {
                     RequestName: methodKeyValue[0],
                     HttpMethod: methodKeyValue[1],

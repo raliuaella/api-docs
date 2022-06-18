@@ -15,7 +15,9 @@ export type LexerTokens = {
     Consumes?: Array<string> | null | undefined,
     Produces?: Array<string> | null | undefined,
     Body?: object | null,
-    Description?: string | null
+    Description?: string | null,
+    FormData?: object | null,
+    FileType?: object | string | null
     
     
 }

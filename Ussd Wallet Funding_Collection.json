@@ -1,0 +1,121 @@
+{
+  "item": [
+    {
+      "id": "7429c9af-1c8e-4b98-9e29-b9c946d82c3b",
+      "description": {},
+      "request": {
+        "url": {
+          "query": [],
+          "variable": []
+        },
+        "method": "GET"
+      },
+      "response": [],
+      "event": []
+    },
+    {
+      "id": "5800472b-7328-475f-b49f-396f34d77aa1",
+      "name": "BankLisiting",
+      "description": {
+        "content": "'returns list of banks in the system'",
+        "type": "text/plain"
+      },
+      "request": {
+        "name": "BankLisiting",
+        "description": {
+          "content": "'returns list of banks in the system'",
+          "type": "text/plain"
+        },
+        "url": {
+          "protocol": "http",
+          "path": [],
+          "host": [
+            "http://localhost:8090"
+          ],
+          "query": [
+            {
+              "name": "pageIndex",
+              "key": "pageIndex",
+              "value": "1"
+            },
+            {
+              "name": "pageSize",
+              "key": "pageSize",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        },
+        "method": "GET"
+      },
+      "response": [],
+      "event": []
+    },
+    {
+      "id": "73d6a680-af12-40f8-84a4-872b4a774695",
+      "name": "getUssdString",
+      "description": {},
+      "request": {
+        "name": "getUssdString",
+        "description": {},
+        "url": {
+          "protocol": "http",
+          "path": [
+            "userid"
+          ],
+          "host": [
+            "http://localhost:8090"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}"
+        }
+      },
+      "response": [],
+      "event": []
+    },
+    {
+      "id": "f2a05ce2-78e4-460f-a8d1-6b86fc40385f",
+      "name": "GetCustomerDetails",
+      "description": {},
+      "request": {
+        "name": "GetCustomerDetails",
+        "description": {},
+        "url": {
+          "protocol": "http",
+          "path": [],
+          "host": [
+            "http://localhost:8090"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "name": "accept",
+            "key": "accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"customerRef\":\"''\"}"
+        }
+      },
+      "response": [],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [],
+  "info": {
+    "_postman_id": "dcced33f-de1e-460e-b8bf-65708febf38d",
+    "name": "Ussd Wallet Funding_Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  }
+}

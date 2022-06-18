@@ -1,8 +1,10 @@
-export enum Keywords {
-    'ControllerName', 
-    '@Controller',
+export enum Identify {
+    'Controller', 
+    'Consumes',
     'Headers', 
-    '@headers',
-    'MethodName', 
-    '@Method'
+    'Produces',
+    'Method', 
+    'Params',
+    'Query',
+    'Body'
 }

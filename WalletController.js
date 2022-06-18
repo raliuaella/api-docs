@@ -17,8 +17,9 @@ class WalletFundingController {
         //this.serviceName = this.config.get<string>('SERVICE_NAME');
     }
     // (reuestname,httpmethod,url,query,params,body,header)
-    /// MethodName=(BankLisiting;GET;'v2/bank-listing';{pageIndex:1,pageSize:10};null;null;null)
+    /// MethodName=(BankLisiting;GET;'v2/bank-listing';)
     /// @Produces([application/json])
+    /// Query({pageIndex:1,pageSize:10})
     BankShortCodeListing() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log("data returned")
@@ -26,8 +27,10 @@ class WalletFundingController {
         });
     }
     //@Post('ussd-string')
-    /// MethodName=(getUssdString;POST;'api/ussd-string';{};{userid:1};{amount:5000,userid:454,bankCode:322};{})
+    /// MethodName=(getUssdString;POST;'api/ussd-string')
     /// @Consumes([application/json,application/xml])
+    /// @Body({amount:5000,userid:454,bankCode:322})
+    /// Params({userid:1})
     GetUssdString() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('generate ussd-session-string-initiated at' + new Date().toString());
@@ -56,6 +59,7 @@ class WalletFundingController {
     /// MethodName=(GetCustomerDetails;POST;'api/customer-details';{};{};{};null)
     /// @Consumes([application/json,application/xml])
     /// @Produces([application/json,text/csv])
+    /// Headers({accept:application/json})
     GetCustomerDetails() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('get customer details ' + JSON.stringify(body));

@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { hostname } from "os";
-import { LexerTokens } from "../lexer/LexerTokens.type";
+import { LexerTokens, TokenValue } from "../lexer/LexerTokens.type";
 
 export const NotNull = (target: any, propertyName: string, parameterIndex: number) => {
     let descriptor: PropertyDescriptor = {}
@@ -64,10 +64,10 @@ export const alllinesThatBeginWith = (testChar: RegExp, inputs: string[]): strin
     return matchStrings
 }
 
-export const getAllTokenValues = (inputs: string[]): object[] => {
+export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
     const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes']$/ig
     const regex = new RegExp(matchString)
-    let response = []
+    let response: TokenValue[] = []
     for(let input of inputs) {
         input = input.replace(/^\/\/\//g, '')
         const matchedIndex: number  = 0

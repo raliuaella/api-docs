@@ -1,7 +1,7 @@
 import { DirectoryCrawler } from "./core/DirectoryCrawler";
 import { FileScanner } from "./core/FileScanner";
 import { lexer } from "./core/lexer/Lexer";
-import { Parser } from "./core/Parser";
+//import { Parser } from "./core/Parser";
 
 // file scabber
 const dir = new DirectoryCrawler({path:__dirname})

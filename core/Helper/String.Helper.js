@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateTokenId = exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.getAllTokenValues = exports.alllinesThatBeginWith = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
+exports.generateTokenId = exports.unique = exports.StringIsNullOrEmpty = exports.parseParams = exports.getAllTokenValues = exports.simpleStringToObject = exports.explode = exports.alllinesThatBeginWith = exports.parseQuery = exports.JoinWith = exports.NotNull = void 0;
 const crypto_1 = require("crypto");
 const os_1 = require("os");
 const NotNull = (target, propertyName, parameterIndex) => {
@@ -51,6 +51,20 @@ const alllinesThatBeginWith = (testChar, inputs) => {
     return matchStrings;
 };
 exports.alllinesThatBeginWith = alllinesThatBeginWith;
+const explode = (sep, input) => {
+    return input.split(sep);
+};
+exports.explode = explode;
+const simpleStringToObject = (input) => {
+    const splittedString = (0, exports.explode)(",", input);
+    let object = {};
+    splittedString.forEach((v) => {
+        const currentValue = (0, exports.explode)(":", v.replace(/[\{,\}]/g, ''));
+        object[currentValue[0]] = currentValue[1];
+    });
+    return object;
+};
+exports.simpleStringToObject = simpleStringToObject;
 const getAllTokenValues = (inputs) => {
     const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes']$/ig;
     const regex = new RegExp(matchString);

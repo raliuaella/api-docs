@@ -10,16 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WalletFundingController = void 0;
-/// ControllerName=('api/WalletController')
+/// Controller=('api/WalletController')
 class WalletFundingController {
     // private serviceName: string;
     constructor() {
         //this.serviceName = this.config.get<string>('SERVICE_NAME');
     }
     // (reuestname,httpmethod,url,query,params,body,header)
-    /// MethodName=(BankLisiting;GET;'v2/bank-listing';)
+    /// Method=BankLisiting;GET;'v2/bank-listing')
     /// @Produces([application/json])
     /// Query({pageIndex:1,pageSize:10})
+    /// @Description('returns list of banks in the system')
     BankShortCodeListing() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log("data returned")
@@ -27,10 +28,10 @@ class WalletFundingController {
         });
     }
     //@Post('ussd-string')
-    /// MethodName=(getUssdString;POST;'api/ussd-string')
+    /// Method=(getUssdString;POST;'api/ussd-string')
     /// @Consumes([application/json,application/xml])
     /// @Body({amount:5000,userid:454,bankCode:322})
-    /// Params({userid:1})
+    /// @Params({userid:1})
     GetUssdString() {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('generate ussd-session-string-initiated at' + new Date().toString());
@@ -56,10 +57,11 @@ class WalletFundingController {
     }
     // @Post('customer-details')
     // @UseGuards(AuthGuard('basic'))
-    /// MethodName=(GetCustomerDetails;POST;'api/customer-details';{};{};{};null)
+    /// Method=(GetCustomerDetails;POST;'api/customer-details')
     /// @Consumes([application/json,application/xml])
     /// @Produces([application/json,text/csv])
-    /// Headers({accept:application/json})
+    /// @Headers({accept:application/json})
+    /// @Body({customerRef:''})
     GetCustomerDetails() {
         return __awaiter(this, void 0, void 0, function* () {
             // console.log('get customer details ' + JSON.stringify(body));

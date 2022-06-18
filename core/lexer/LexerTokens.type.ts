@@ -14,7 +14,8 @@ export type LexerTokens = {
     FullUrl?: string | null | undefined,
     Consumes?: Array<string> | null | undefined,
     Produces?: Array<string> | null | undefined,
-    Body?: object | null
+    Body?: object | null,
+    Description?: string | null
     
     
 }

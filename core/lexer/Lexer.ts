@@ -1,6 +1,6 @@
 import { Console } from "console";
 import { EnumToList } from "../Helper/Enum.Helper";
-import { alllinesThatBeginWith, generateTokenId, getAllTokenValues, unique } from "../Helper/String.Helper";
+import { alllinesThatBeginWith, generateTokenId, getAllTokenValues, simpleStringToObject, unique } from "../Helper/String.Helper";
 import { Identify } from "./identifier.enum";
 import { LexerTokens, TokenValue } from "./LexerTokens.type";
 import { LexerTokenTypes } from "./LexerTokenTypes";
@@ -12,7 +12,7 @@ export const lexer = (inputs: string[]) => {
     //console.log(newLines)
     lines = [...newLines]
     let allTokenValues = getAllTokenValues(lines)
-    console.log(allTokenValues)
+  //  console.log(allTokenValues)
     //newLinesRegex.test()
     let counter: number = 0;
     let tokens: LexerTokens[] = [];
@@ -51,12 +51,14 @@ export const lexer = (inputs: string[]) => {
 
         let { type, value } = currentLine
         type = type.toUpperCase()
+        //console.log("type is", type)
+        //console.log("identify is ", LexerTokenTypes.Controller.toString().toUpperCase())
         const _id: string = generateTokenId()
-        if (type == Identify.Controller.toString().toUpperCase()) {
+        if (type == LexerTokenTypes.Controller.toString().toUpperCase()) {
             currentToken = {
                 _id,
                 KeyName: type,
-                KeyDataType: typeof (String),
+                KeyDataType: typeof(String).name,
                 KeyValue: value.replace(/[\'\"]+/g, ''),
                 ControllerPath: value.replace(/[\'\"]+/g, ''),
                 TokenType: LexerTokenTypes.Controller
@@ -66,33 +68,42 @@ export const lexer = (inputs: string[]) => {
 
         }
 
-        if(type == Identify.Params.toString().toUpperCase()) {
-            const KeyValue = Object.create(JSON.parse(value))
+        if(type == LexerTokenTypes.Params.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
             currentToken.Params = KeyValue
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if(type == Identify.Consumes.toString().toUpperCase()) {
-            const KeyValue = value.replace(/[\[,\]]/g, '').split(",")
-
+        if(type == LexerTokenTypes.Consumes.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
             currentToken.Consumes = []
+            
             KeyValue.forEach((v:string)=>{
-                currentToken.Consumes?.push(v.trim())
+                currentToken.Consumes?.push(v.trim().replace('[', '').replace(']', ''))
             })
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Description.toString().toUpperCase()) {
+            currentToken.Description = value
            
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if(type == Identify.Produces.toString().toUpperCase()) {
-            const KeyValue = value.replace(/[\[,\]]/g, '').split(",")
-
+        if(type == LexerTokenTypes.Produces.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
             currentToken.Produces = []
+            
             KeyValue.forEach((v:string)=>{
-                currentToken.Produces?.push(v.trim())
+                currentToken.Produces?.push(v.trim().replace('[', '').replace(']', ''))
             })
            
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
@@ -100,31 +111,32 @@ export const lexer = (inputs: string[]) => {
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if(type == Identify.Headers.toString().toUpperCase()) {
-            const KeyValue = Object.create(JSON.parse(value))
+        if(type == LexerTokenTypes.Headers.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
             currentToken.Headers = KeyValue
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if(type == Identify.Query.toString().toUpperCase()) {
-            const KeyValue = Object.create(JSON.parse(value))
+        if(type == LexerTokenTypes.Query.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
+            //console.log("keyValue ", KeyValue)
             currentToken.Query = KeyValue
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if(type == Identify.Body.toString().toUpperCase()) {
-            const KeyValue = Object.create(JSON.parse(value))
+        if(type == LexerTokenTypes.Body.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
             currentToken.Body = KeyValue
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
             tokens.splice(indexOfTokenToUpdate, 1, currentToken)
         }
 
-        if (type == Identify.Method.toString().toUpperCase()) {
+        if (type == LexerTokenTypes.Method.toString().toUpperCase()) {
             const methodKeyValue = value.split(";")
             if (methodKeyValue.length != 3)
                 throw new Error("parameter @Method/Method is not properly formatted")
@@ -132,7 +144,7 @@ export const lexer = (inputs: string[]) => {
                 _id,
                 RequestName: methodKeyValue[0],
                 KeyName: type,
-                KeyDataType: typeof (Object),
+                KeyDataType: typeof(Object).name,
                 KeyValue: {
                     RequestName: methodKeyValue[0],
                     HttpMethod: methodKeyValue[1],

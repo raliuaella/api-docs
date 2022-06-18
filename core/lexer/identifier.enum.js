@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Keywords = void 0;
-var Keywords;
-(function (Keywords) {
-    Keywords[Keywords["Controlle"] = 0] = "Controlle";
-    Keywords[Keywords["Consumes"] = 1] = "Consumes";
-    Keywords[Keywords["Headers"] = 2] = "Headers";
-    Keywords[Keywords["Produces"] = 3] = "Produces";
-    Keywords[Keywords["Method"] = 4] = "Method";
-    Keywords[Keywords["ApiParams"] = 5] = "ApiParams";
-    Keywords[Keywords["ApiQuery"] = 6] = "ApiQuery";
-    Keywords[Keywords["ApiBodys"] = 7] = "ApiBodys";
-})(Keywords = exports.Keywords || (exports.Keywords = {}));
+exports.Identify = void 0;
+var Identify;
+(function (Identify) {
+    Identify[Identify["Controller"] = 0] = "Controller";
+    Identify[Identify["Consumes"] = 1] = "Consumes";
+    Identify[Identify["Headers"] = 2] = "Headers";
+    Identify[Identify["Produces"] = 3] = "Produces";
+    Identify[Identify["Method"] = 4] = "Method";
+    Identify[Identify["Params"] = 5] = "Params";
+    Identify[Identify["Query"] = 6] = "Query";
+    Identify[Identify["Body"] = 7] = "Body";
+})(Identify = exports.Identify || (exports.Identify = {}));

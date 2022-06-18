@@ -10,6 +10,7 @@
    /// Method=BankLisiting;GET;'v2/bank-listing')
    /// @Produces([application/json])
    /// Query({pageIndex:1,pageSize:10})
+   /// @Description('returns list of banks in the system')
     async BankShortCodeListing() {
        // console.log("data returned")
      // return SuccessResponse(res, await this.service.ListBanks(), this.serviceName);
@@ -50,7 +51,7 @@
   
    // @Post('customer-details')
    // @UseGuards(AuthGuard('basic'))
-   /// MethodName=(GetCustomerDetails;POST;'api/customer-details')
+   /// Method=(GetCustomerDetails;POST;'api/customer-details')
    /// @Consumes([application/json,application/xml])
    /// @Produces([application/json,text/csv])
    /// @Headers({accept:application/json})

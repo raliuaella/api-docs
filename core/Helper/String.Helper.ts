@@ -64,6 +64,19 @@ export const alllinesThatBeginWith = (testChar: RegExp, inputs: string[]): strin
     return matchStrings
 }
 
+export const explode = (sep:string, input: string): string[] => {
+    return input.split(sep)
+}
+export const simpleStringToObject = (input: string): object => {
+    const splittedString = explode(",", input)
+    let object:any = {}
+    splittedString.forEach((v:string)=>{
+        const currentValue = explode(":", v.replace(/[\{,\}]/g, ''))
+        object[currentValue[0]] = currentValue[1]
+    })
+
+    return object
+}
 export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
     const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes']$/ig
     const regex = new RegExp(matchString)

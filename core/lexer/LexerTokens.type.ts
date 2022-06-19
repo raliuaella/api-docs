@@ -18,6 +18,7 @@ export type LexerTokens = {
     Description?: string | null,
     FormData?: object | null,
     FileType?: object | string | null
+    Folder?: Array<string> | null
     
     
 }

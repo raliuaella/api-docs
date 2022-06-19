@@ -7,9 +7,9 @@ import { lexer } from "./core/lexer/Lexer";
 // file scabber
 const dir = new DirectoryCrawler({ path: __dirname })
 const files: string[] = dir.walk()
-
-const fsScanner = new FileScanner(files[2], { isRelative: false })
-
+//console.log(files)
+const fsScanner = new FileScanner(files[4], { isRelative: false })
+//console.log(fsScanner.ReadAllLines())
 const _lexer = lexer(fsScanner.ReadAllLines())
 // const _parser = Parser(_lexer, {
 //     AppTitle: "Sample postMancolletion",
@@ -17,8 +17,9 @@ const _lexer = lexer(fsScanner.ReadAllLines())
 // })
 const schema = new JsonSchema(_lexer, {
     "AppTitle": "Ussd Wallet Funding",
-    "BasePath":"v1",
-    "Host": "http://localhost:8090",
-    BaseUrl: "http://localhost:8090"
+    "BasePath":"api/v1",
+    "Host": "localhost:8090",
+    BaseUrl: "http://localhost:8090",
+    CollectionName: "Sample_Collect"
 });
 schema.CreateCollection()

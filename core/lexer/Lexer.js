@@ -7,10 +7,10 @@ const lexer = (inputs) => {
     let lines = [...inputs];
     //console.log("lines length " + lines.length)
     const newLines = [...(0, String_Helper_1.alllinesThatBeginWith)(/^\/\/\//ig, lines)];
-    //console.log(newLines)
+    // console.log('neLines ', newLines)
     lines = [...newLines];
     let allTokenValues = (0, String_Helper_1.getAllTokenValues)(lines);
-    //  console.log(allTokenValues)
+    //console.log(allTokenValues)
     //newLinesRegex.test()
     let counter = 0;
     let tokens = [];
@@ -74,6 +74,17 @@ const lexer = (inputs) => {
             KeyValue.forEach((v) => {
                 var _a;
                 (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v.trim().replace('[', '').replace(']', ''));
+            });
+            const indexOfTokenToUpdate = tokens.findIndex(x => x._id == currentToken._id);
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Folder.toString().toUpperCase()) {
+            const KeyValue = value.split(",");
+            currentToken.Folder = [];
+            KeyValue.forEach((v) => {
+                var _a;
+                (_a = currentToken.Folder) === null || _a === void 0 ? void 0 : _a.push(v.trim().replace('[', '').replace(']', ''));
             });
             const indexOfTokenToUpdate = tokens.findIndex(x => x._id == currentToken._id);
             //tokens.push(token)

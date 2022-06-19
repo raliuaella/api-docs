@@ -39,7 +39,7 @@ const parseQuery = (input) => {
 };
 exports.parseQuery = parseQuery;
 const alllinesThatBeginWith = (testChar, inputs) => {
-    const newLinesRegex = new RegExp(testChar);
+    const newLinesRegex = new RegExp(testChar); // this method is not that efficient enough
     let matchStrings = [];
     for (let input of inputs) {
         input = input.trim();
@@ -66,7 +66,7 @@ const simpleStringToObject = (input) => {
 };
 exports.simpleStringToObject = simpleStringToObject;
 const getAllTokenValues = (inputs) => {
-    const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes']$/ig;
+    const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes', '@folder']$/ig;
     const regex = new RegExp(matchString);
     let response = [];
     for (let input of inputs) {

@@ -15,17 +15,28 @@ class JsonSchema {
     toJSON() {
         return JSON.parse(JSON.stringify(this.jsonObject));
     }
-    CreateCollection() {
-        const info = {
-            "name": this.options.AppTitle + "_Collection",
-            "version": this.options.version
-        };
-        let items = [];
-        for (let t of this.inputs) {
+    CreateFolder(folders, lexers) {
+        let parent = folders;
+        let len = folders.length - 1;
+        let counter = 0;
+        let item = [];
+        // if(folders.length == 0)
+        //     return item;
+        let allParentElement = [];
+        for (let lexer of lexers) {
+            const _folders = lexer.Folder;
+            const firstElement = _folders[0];
+            if (firstElement == parent)
+                allParentElement.push(lexer);
+        }
+        //   while(counter < len) {
+        for (let t of allParentElement) {
             const currentInput = t;
-            //const tokenCollections = this.inputs.filter(x=>x.KeyName.toLowerCase().includes('method'))
-            let item = {};
-            item["name"] = currentInput.RequestName;
+            let mItemsItem = {
+                name: parent,
+                item: {}
+            };
+            mItemsItem.item["name"] = currentInput.RequestName;
             let request = {};
             //  for(let t of tokenCollections) {
             if (t.TokenType.toUpperCase() == LexerTokenTypes_1.LexerTokenTypes.Method.toUpperCase()) {
@@ -58,7 +69,7 @@ class JsonSchema {
                     protocol: "http",
                     query: queries,
                     path: paramsvalue,
-                    host: this.options.Host
+                    host: this.options.Host,
                 };
                 request['description'] = t.Description;
                 request['method'] = methodPath['HttpMethod'],
@@ -101,16 +112,120 @@ class JsonSchema {
                     }
                 }
             }
-            //   }
-            item['request'] = request;
-            item["description"] = currentInput.Description;
-            items.push(item);
+            mItemsItem.item['request'] = request;
+            mItemsItem.item["description"] = {
+                content: t.Description,
+                type: t.Consumes
+            };
+            item.push(mItemsItem);
+        }
+        counter += 1;
+        // }
+        return item;
+    }
+    CreateCollection() {
+        const info = {
+            "name": this.options.AppTitle + "_Collection",
+            "version": this.options.version
+        };
+        console.log(this.inputs);
+        let items = []; // outer item
+        for (let t of this.inputs) {
+            if (t.RequestName) {
+                let item = {}; // inner items
+                const currentInput = t;
+                item["name"] = currentInput.RequestName;
+                let request = {};
+                //  for(let t of tokenCollections) {
+                if (t.TokenType.toUpperCase() == LexerTokenTypes_1.LexerTokenTypes.Method.toUpperCase()) {
+                    const methodPath = t.KeyValue;
+                    let url = (0, String_Helper_1.JoinWith)('/', '/' + currentInput.ControllerPath.replace(/[\',\"]+/g, ''), methodPath["path"].replace(/[\',\"]+/g, ''));
+                    let urlParam = '';
+                    let queries = [];
+                    let paramsvalue = [];
+                    if (t.Query) {
+                        let query = t.Query;
+                        let urlquery = '?';
+                        for (let s of Array.from(Object.keys(query))) {
+                            urlquery += `${s}=${query[s]}&`;
+                            queries.push({
+                                key: s,
+                                name: s,
+                                value: query[s]
+                            });
+                        }
+                    }
+                    if (t.Params) {
+                        let params = t.Params;
+                        let urlquery = '/';
+                        for (let s of Array.from(Object.keys(params))) {
+                            urlquery += `{{${s}}}`;
+                            paramsvalue.push(s);
+                        }
+                        urlParam += urlquery;
+                        // url += urlquery
+                    }
+                    request['url'] = {
+                        protocol: "http",
+                        query: queries,
+                        path: [(methodPath['path'] + urlParam).replace(/[\']+/g, '')],
+                        host: (0, String_Helper_1.JoinWith)('/', this.options.Host, this.options.BasePath),
+                        raw: url + '/' + methodPath['path']
+                    };
+                    request['description'] = {
+                        content: t.Description,
+                        type: t.Consumes
+                    };
+                    request['method'] = methodPath['HttpMethod'],
+                        request['name'] = methodPath['RequestName'];
+                    if (t.Body) {
+                        request['body'] = {
+                            mode: "raw",
+                            raw: JSON.stringify(t.Body),
+                            description: t.Description
+                        };
+                    }
+                    if (t.FormData) {
+                        let _formData = t.FormData;
+                        let formData = [];
+                        for (let s of Array.from(Object.keys(_formData))) {
+                            formData.push({
+                                key: s,
+                                name: s,
+                                value: _formData[s]
+                            });
+                        }
+                        request['body'] = {
+                            formData
+                        };
+                    }
+                    if (t.FileType) {
+                        request['body'] = {
+                            file: t.FileType
+                        };
+                    }
+                    if (t.Headers) {
+                        request['header'] = [];
+                        let _header = t.Headers;
+                        for (let s of Array.from(Object.keys(_header))) {
+                            request.header.push({
+                                key: s,
+                                name: s,
+                                value: _header[s]
+                            });
+                        }
+                    }
+                }
+                item['request'] = request;
+                //item["description"] =
+                items.push(item);
+            }
         }
         const collection = new postman_collection_1.Collection({
             info,
-            item: items
+            item: [...items]
         });
-        (0, fs_1.writeFileSync)(info.name + '.json', JSON.stringify(collection, null, 2));
+        (0, fs_1.writeFileSync)(this.options && this.options.CollectionName ? this.options.CollectionName + '.json' : info.name + '.json', JSON.stringify(collection, null, 2));
     }
     constructSwaggerObject() {
         var _a;

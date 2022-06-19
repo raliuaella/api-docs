@@ -11,5 +11,6 @@ export enum LexerTokenTypes {
         MethodPath="Method",
         Consumes="Consumes",
         Produces="Produces",
-        Description="Description"
+        Description="Description",
+        Folder="Folder"
 }

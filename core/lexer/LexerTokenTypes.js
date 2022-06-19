@@ -15,4 +15,5 @@ var LexerTokenTypes;
     LexerTokenTypes["Consumes"] = "Consumes";
     LexerTokenTypes["Produces"] = "Produces";
     LexerTokenTypes["Description"] = "Description";
+    LexerTokenTypes["Folder"] = "Folder";
 })(LexerTokenTypes = exports.LexerTokenTypes || (exports.LexerTokenTypes = {}));

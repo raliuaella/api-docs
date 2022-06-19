@@ -8,7 +8,9 @@ const Lexer_1 = require("./core/lexer/Lexer");
 // file scabber
 const dir = new DirectoryCrawler_1.DirectoryCrawler({ path: __dirname });
 const files = dir.walk();
-const fsScanner = new FileScanner_1.FileScanner(files[2], { isRelative: false });
+//console.log(files)
+const fsScanner = new FileScanner_1.FileScanner(files[4], { isRelative: false });
+//console.log(fsScanner.ReadAllLines())
 const _lexer = (0, Lexer_1.lexer)(fsScanner.ReadAllLines());
 // const _parser = Parser(_lexer, {
 //     AppTitle: "Sample postMancolletion",
@@ -16,8 +18,9 @@ const _lexer = (0, Lexer_1.lexer)(fsScanner.ReadAllLines());
 // })
 const schema = new JsonSchema_1.JsonSchema(_lexer, {
     "AppTitle": "Ussd Wallet Funding",
-    "BasePath": "v1",
-    "Host": "http://localhost:8090",
-    BaseUrl: "http://localhost:8090"
+    "BasePath": "api/v1",
+    "Host": "localhost:8090",
+    BaseUrl: "http://localhost:8090",
+    CollectionName: "Sample_Collect"
 });
 schema.CreateCollection();

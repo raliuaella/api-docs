@@ -162,9 +162,32 @@ export class JsonSchema {
 
         let items = [] // outer item
         for (let t of this.inputs) {
+            const currentInput = t
+            let item: any = {} // inner items
 
-            if (t.RequestName) {
-                let item: any = {} // inner items
+            if (t.Folder) {
+                let folders = t.Folder
+                let len = folders.length
+                while (len < folders.length) {
+                    let currentFolder = folders[len]
+                    
+                    
+                    len = len + 1
+
+                    let allParentElement: LexerTokens[] = []
+                    for (let lexer of this.inputs) {
+                        const _folders = t.Folder as string[];
+                        const firstElement = _folders[0]
+                        let indexOfCurrentFolder = _folders.indexOf(currentFolder)
+                        lexer.Folder = _folders.splice(indexOfCurrentFolder, 1)
+                        if (firstElement == currentFolder)
+                            allParentElement.push(lexer)
+                    }
+
+                    items.push(...this.CreateFolder(currentFolder,allParentElement))
+                }
+            }
+            else {
                 const currentInput = t
 
                 item["name"] = currentInput.RequestName
@@ -175,7 +198,6 @@ export class JsonSchema {
                     const methodPath: any = t.KeyValue
 
                     let url = JoinWith('/', '/' + currentInput.ControllerPath.replace(/[\',\"]+/g, ''), methodPath["path"].replace(/[\',\"]+/g, ''))
-                    let urlParam='';
                     let queries = []
                     let paramsvalue = []
                     if (t.Query) {
@@ -199,24 +221,18 @@ export class JsonSchema {
                             urlquery += `{{${s}}}`
                             paramsvalue.push(s)
 
-
                         }
-                        urlParam += urlquery
                         // url += urlquery
 
                     }
                     request['url'] = {
                         protocol: "http",
                         query: queries,
-                        path: [(methodPath['path']+urlParam).replace(/[\']+/g, '')],
-                        host: JoinWith('/',<string>this.options.Host, <string>this.options.BasePath),
-                        raw: url+'/'+ methodPath['path']
+                        path: paramsvalue,
+                        host: this.options.Host,
 
                     }
-                    request['description'] =  {
-                        content: t.Description,
-                        type: t.Consumes
-                    }
+                    request['description'] = t.Description
                     request['method'] = methodPath['HttpMethod'],
                         request['name'] = methodPath['RequestName']
                     if (t.Body) {
@@ -262,18 +278,28 @@ export class JsonSchema {
                 }
 
                 item['request'] = request
-                //item["description"] =
+                item["description"] = {
+                    content: t.Description,
+                    type: t.Consumes
+                }
 
                 items.push(item)
-
             }
+
+            //const tokenCollections = this.inputs.filter(x=>x.KeyName.toLowerCase().includes('method'))
+
+
+
+
+            //   }
+
 
 
 
         }
         const collection = new Collection({
             info,
-            item: [...items]
+            item: items
         })
 
         writeFileSync(this.options && this.options.CollectionName ? this.options.CollectionName + '.json' : info.name + '.json',

@@ -9,10 +9,10 @@ export const lexer = (inputs: string[]) => {
     let lines = [...inputs]
     //console.log("lines length " + lines.length)
     const newLines = [...alllinesThatBeginWith(/^\/\/\//ig, lines)]
-    //console.log(newLines)
+   // console.log('neLines ', newLines)
     lines = [...newLines]
     let allTokenValues = getAllTokenValues(lines)
-  //  console.log(allTokenValues)
+ //console.log(allTokenValues)
     //newLinesRegex.test()
     let counter: number = 0;
     let tokens: LexerTokens[] = [];
@@ -83,6 +83,19 @@ export const lexer = (inputs: string[]) => {
             
             KeyValue.forEach((v:string)=>{
                 currentToken.Consumes?.push(v.trim().replace('[', '').replace(']', ''))
+            })
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Folder.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
+            currentToken.Folder = []
+            
+            KeyValue.forEach((v:string)=>{
+                currentToken.Folder?.push(v.trim().replace('[', '').replace(']', ''))
             })
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)

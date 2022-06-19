@@ -10,7 +10,7 @@ import { Swagger } from "./swagger.type";
 export class JsonSchema {
 
     constructor(private inputs: LexerTokens[], private options: ApiDocsOptions) {
-        this.constructSwaggerObject()
+       // this.constructSwaggerObject()
     }
     private jsonObject: Swagger = { "info": {}, paths: {} }
     public toJSON(): string {
@@ -158,7 +158,7 @@ export class JsonSchema {
             "name": this.options.AppTitle + "_Collection",
             "version": <string>this.options.version
         }
-        console.log(this.inputs)
+        //console.log(this.inputs)
 
         let items = [] // outer item
         for (let t of this.inputs) {

@@ -6,9 +6,9 @@ const JsonSchema_1 = require("./core/JsonSchema");
 const Lexer_1 = require("./core/lexer/Lexer");
 //import { Parser } from "./core/Parser";
 // file scabber
-const dir = new DirectoryCrawler_1.DirectoryCrawler({ path: __dirname });
+const dir = new DirectoryCrawler_1.DirectoryCrawler({ path: __dirname, ignore: ["node_modules", "*.git", ".git", ".git"] });
 const files = dir.walk();
-//console.log(files)
+console.log(files);
 const fsScanner = new FileScanner_1.FileScanner(files[4], { isRelative: false });
 //console.log(fsScanner.ReadAllLines())
 const _lexer = (0, Lexer_1.lexer)(fsScanner.ReadAllLines());

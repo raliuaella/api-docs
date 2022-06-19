@@ -10,7 +10,7 @@ class JsonSchema {
         this.inputs = inputs;
         this.options = options;
         this.jsonObject = { "info": {}, paths: {} };
-        this.constructSwaggerObject();
+        // this.constructSwaggerObject()
     }
     toJSON() {
         return JSON.parse(JSON.stringify(this.jsonObject));
@@ -128,7 +128,7 @@ class JsonSchema {
             "name": this.options.AppTitle + "_Collection",
             "version": this.options.version
         };
-        console.log(this.inputs);
+        //console.log(this.inputs)
         let items = []; // outer item
         for (let t of this.inputs) {
             if (t.RequestName) {

@@ -5,9 +5,9 @@ import { lexer } from "./core/lexer/Lexer";
 //import { Parser } from "./core/Parser";
 
 // file scabber
-const dir = new DirectoryCrawler({ path: __dirname })
+const dir = new DirectoryCrawler({ path: __dirname, ignore:["node_modules", "*.git", ".git", ".git"] })
 const files: string[] = dir.walk()
-//console.log(files)
+console.log(files)
 const fsScanner = new FileScanner(files[4], { isRelative: false })
 //console.log(fsScanner.ReadAllLines())
 const _lexer = lexer(fsScanner.ReadAllLines())

@@ -1,115 +1,210 @@
 {
   "item": [
     {
-      "id": "b414c35b-b1fd-4a48-8bdd-11f018f16e8f",
-      "name": "BankLisiting",
-      "request": {
-        "name": "BankLisiting",
-        "description": {
-          "content": "'returns list of banks in the system'",
-          "type": "text/plain"
-        },
-        "url": {
-          "protocol": "http",
-          "path": [
-            "bank-listing"
-          ],
-          "host": [
-            "localhost:8090/api/v1"
-          ],
-          "query": [
-            {
-              "name": "pageIndex",
-              "key": "pageIndex",
-              "value": "1"
+      "id": "17a8601e-aa85-4637-9184-05e1f79f6760",
+      "item": [
+        {
+          "name": "BankLisiting",
+          "request": {
+            "name": "BankLisiting",
+            "url": {
+              "protocol": "http",
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "name": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "name": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "path": [
+                "bank-listing"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/WalletController api/WalletController/bank-listing/'bank-listing'"
             },
-            {
-              "name": "pageSize",
-              "key": "pageSize",
-              "value": "10"
-            }
-          ],
-          "variable": []
-        },
-        "method": "GET"
-      },
-      "response": [],
-      "event": []
-    },
-    {
-      "id": "724ab181-8562-4cb3-a146-26eb90720dfd",
-      "name": "getUssdString",
-      "request": {
-        "name": "getUssdString",
-        "description": {
-          "type": [
-            "application/json",
-            "application/xml"
-          ]
-        },
-        "url": {
-          "protocol": "http",
-          "path": [
-            "ussd-string/{{userid}}"
-          ],
-          "host": [
-            "localhost:8090/api/v1"
-          ],
-          "query": [],
-          "variable": []
-        },
-        "method": "POST",
-        "body": {
-          "mode": "raw",
-          "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}"
-        }
-      },
-      "response": [],
-      "event": []
-    },
-    {
-      "id": "fbab8cd2-d492-4734-94af-0500deafdd62",
-      "name": "GetCustomerDetails",
-      "request": {
-        "name": "GetCustomerDetails",
-        "description": {
-          "type": [
-            "application/json",
-            "application/xml"
-          ]
-        },
-        "url": {
-          "protocol": "http",
-          "path": [
-            "customer-details"
-          ],
-          "host": [
-            "localhost:8090/api/v1"
-          ],
-          "query": [],
-          "variable": []
-        },
-        "header": [
-          {
-            "name": "accept",
-            "key": "accept",
-            "value": "application/json"
+            "description": {
+              "content": "'returns list of banks in the system'"
+            },
+            "method": "GET"
           }
-        ],
-        "method": "POST",
-        "body": {
-          "mode": "raw",
-          "raw": "{\"customerRef\":\"''\"}"
+        },
+        {
+          "name": "getUssdString",
+          "request": {
+            "name": "getUssdString",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "ussd-string/{{userid}}"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/WalletController api/WalletController/ussd-string/'ussd-string'"
+            },
+            "description": {
+              "type": [
+                "application/json",
+                "application/xml"
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}"
+            }
+          }
+        },
+        {
+          "name": "GetCustomerDetails",
+          "request": {
+            "name": "GetCustomerDetails",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "customer-details"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/WalletController api/WalletController/customer-details/'customer-details'"
+            },
+            "description": {
+              "type": [
+                "application/json",
+                "application/xml"
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"customerRef\":\"''\"}"
+            },
+            "header": [
+              {
+                "key": "accept",
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          }
         }
-      },
-      "response": [],
-      "event": []
+      ],
+      "event": [],
+      "name": "WalletController"
+    },
+    {
+      "id": "bb77e217-ee70-4a0b-b9d8-404a26c5eee5",
+      "item": [
+        {
+          "name": "Authenticate",
+          "request": {
+            "name": "Authenticate",
+            "url": {
+              "protocol": "http",
+              "query": [
+                {
+                  "key": "corpCode",
+                  "name": "corpCode",
+                  "value": "23"
+                },
+                {
+                  "key": " password",
+                  "name": " password",
+                  "value": "20"
+                }
+              ],
+              "path": [
+                "authenticate"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/FirstBank api/transfer/v2/authenticate/authenticate"
+            },
+            "description": {},
+            "method": "POST"
+          }
+        },
+        {
+          "name": "ResolveAccount",
+          "request": {
+            "name": "ResolveAccount",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "resolveAccount"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/FirstBank api/transfer/v2/resolveAccount/'resolveAccount'"
+            },
+            "description": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+            }
+          }
+        },
+        {
+          "name": "TransferFund",
+          "request": {
+            "name": "TransferFund",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "transferFund"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/FirstBank api/transfer/v2/transferFund/'transferFund'"
+            },
+            "description": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+            }
+          }
+        },
+        {
+          "name": "GetBalnce",
+          "request": {
+            "name": "GetBalnce",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "getBalance/{{accountNumber}}"
+              ],
+              "host": "{{apiBaseUrl}}",
+              "raw": "/FirstBank api/transfer/v2/getBalance/'getBalance'"
+            },
+            "description": {},
+            "method": "GET",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+            }
+          }
+        }
+      ],
+      "event": [],
+      "name": "FirstBank"
     }
   ],
   "event": [],
-  "variable": [],
+  "variable": [
+    {
+      "id": "apiBaseUrl",
+      "type": "any",
+      "value": "http://localhost:8090"
+    }
+  ],
   "info": {
-    "_postman_id": "15c222d9-752b-46b1-8b96-51a8c8b0ec26",
+    "_postman_id": "90d1a24d-441d-441d-bfd6-bb142c10aca3",
     "name": "Ussd Wallet Funding_Collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   }

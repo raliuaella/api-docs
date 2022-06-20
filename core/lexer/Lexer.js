@@ -19,27 +19,7 @@ const lexer = (inputs) => {
     // // console.log("tokenTypeList ", tokenTypeList)
     // let ControllerPath: string = ''
     let currentToken = { _id: '', KeyDataType: '', KeyValue: '', KeyName: '', TokenType: '', ControllerPath: '' };
-    /*
-        [
-            { type: 'ControllerName', value: "'api/WalletController'" },
-            {
-              type: 'MethodName',
-              value: "BankLisiting;GET;'v2/bank-listing';{pageIndex:1pageSize:10};null;null;null"
-            },
-            { type: 'Produces', value: '[application/json]' },
-            {
-              type: 'MethodName',
-              value: "getUssdString;POST;'api/ussd-string';{};{userid:1};{amount:5000userid:454bankCode:322};{}"
-            },
-            { type: 'Consumes', value: '[application/json,application/xml]' },
-            {
-              type: 'MethodName',
-              value: "GetCustomerDetails;POST;'api/customer-details';{};{};{};null"
-            },
-            { type: 'Consumes', value: '[application/json,application/xml]' },
-            { type: 'Produces', value: '[application/json,text/csv]' }
-          ]
-          */
+    let controllerName = '';
     while (counter < allTokenValues.length) {
         let currentLine = allTokenValues[counter];
         //const splitByQuote = currentLine.split('\'')
@@ -51,13 +31,16 @@ const lexer = (inputs) => {
         //console.log("identify is ", LexerTokenTypes.Controller.toString().toUpperCase())
         const _id = (0, String_Helper_1.generateTokenId)();
         if (type == LexerTokenTypes_1.LexerTokenTypes.Controller.toString().toUpperCase()) {
+            let controllervalue = value.split(',');
+            controllerName = controllervalue[0].trim();
             currentToken = {
                 _id,
                 KeyName: type,
                 KeyDataType: typeof (String).name,
-                KeyValue: value.replace(/[\'\"]+/g, ''),
-                ControllerPath: value.replace(/[\'\"]+/g, ''),
-                TokenType: LexerTokenTypes_1.LexerTokenTypes.Controller
+                KeyValue: controllervalue[0].replace(/[\'\"]+/g, ''),
+                ControllerPath: value.trim().replace(/[\'\"]+/g, ''),
+                TokenType: LexerTokenTypes_1.LexerTokenTypes.Controller,
+                ControllerName: controllerName
             };
             tokens.push(currentToken);
         }
@@ -143,6 +126,7 @@ const lexer = (inputs) => {
                     HttpMethod: methodKeyValue[1],
                     path: methodKeyValue[2]
                 },
+                ControllerName: controllerName,
                 TokenType: LexerTokenTypes_1.LexerTokenTypes.Method,
                 ControllerPath: currentToken.ControllerPath
             };

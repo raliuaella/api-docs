@@ -1,5 +1,5 @@
-
-  /// Controller=('api/WalletController')
+  // name, url path
+  /// @Controller(WalletController, 'api/WalletController')
   export class WalletFundingController {
    // private serviceName: string;
     constructor() {

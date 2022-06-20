@@ -2,5 +2,6 @@ import { PathLike } from "fs";
 
 export type DirectoryCrawlerOptions = {
     glob?:string | null, path?: PathLike | null,
-    ignore?:string[]
+    ignore?:string[],
+    directoryToRead?: string | string[]
 }

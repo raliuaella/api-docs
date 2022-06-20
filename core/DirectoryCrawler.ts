@@ -1,5 +1,5 @@
 import { DirectoryCrawlerOptions } from "./DirectoryCrawlerOptions";
-import { Dirent, fstat, fstatSync, PathLike, readdir, readdirSync, Stats, statSync } from 'fs'
+import { Dirent, existsSync, fstat, fstatSync, PathLike, readdir, readdirSync, readFileSync, Stats, statSync } from 'fs'
 import path from "path";
 import { glob, GlobSync } from 'glob'
 
@@ -11,27 +11,68 @@ export class DirectoryCrawler {
         const dirPath = <PathLike>this.options.path
         let ignoredFolders = this.options.ignore ? this.options.ignore : []
 
-        
-        for (let folder in ignoredFolders) {
+        // let someToIgnore = ignoredFolders.filter(x=>x.startsWith('.'))
+        // let someContentFileToIgnore = this.IgnoreSomeFileContent('.gitignore', '.dockerignore')
 
-            let ignores = new GlobSync(path.join(dirPath.toString(), folder))
-            if(ignores.found) {
-                console.log("found", ignores.found)
-               // this.filesOrFoldersToIgnore.push(...ignores.found)
+        // ignoredFolders.push(...someContentFileToIgnore)
+        for (let folder of ignoredFolders) {
+            //console.log("fold", folder)
+
+            if (folder != null || folder != ' ' || folder != '') {
+
+                // if (folder.toLowerCase() == '.gitignore' || folder.toLowerCase() == '.dockerignore') {
+                //     const fileContentBuffer = readFileSync(path.join(<string>this.options.path, folder))
+                //     let content = fileContentBuffer.toString().split(/\r?\n/)
+                //     for (let s of content) {
+                //         let ignore = new GlobSync(s)
+                //         this.filesOrFoldersToIgnore.push(...ignore.found)
+                //     }
+                // }
+                // else {
+                    let ignore = new GlobSync(folder)
+                    this.filesOrFoldersToIgnore.push(...ignore.found)
+               // }
+                
             }
+
+
             // glob(folder, (er, matches) => {
             //     if (!er) {
+            //        console.log(matches)
             //         this.filesOrFoldersToIgnore.push(...matches)
             //     }
             // })
         }
+
         console.log("toIgnore", this.filesOrFoldersToIgnore)
         _files.push(...this.WalkDir(dirPath, this.filesOrFoldersToIgnore))
+
+
         return _files
     }
 
     private filesOrFoldersToIgnore: string[] = []
 
+    private IgnoreSomeFileContent(...items: string[]): string[] {
+        let response: string[] = []
+        for (let item of items) {
+            let fileExist = existsSync(item)
+
+            if (fileExist) {
+                const fileContentBuffer = readFileSync(path.join(<string>this.options.path, item))
+                let content = fileContentBuffer.toString().split(/\r?\n/)
+                console.log("fsl", content)
+                response.push(...content)
+            }
+            // let stat = statSync(path.join(__dirname, item))
+            //  if(stat.isFile()) {
+
+            // }
+
+        }
+
+        return response
+    }
     public WalkDir(dir: any, ignoreFolders: string[]) {
         const paths: any[] = [];
         const dirs = [dir];

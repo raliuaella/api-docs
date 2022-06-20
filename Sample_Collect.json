@@ -1,7 +1,7 @@
 {
   "item": [
     {
-      "id": "e369da2f-1bf3-4ea0-8416-365babda5552",
+      "id": "b414c35b-b1fd-4a48-8bdd-11f018f16e8f",
       "name": "BankLisiting",
       "request": {
         "name": "BankLisiting",
@@ -37,7 +37,7 @@
       "event": []
     },
     {
-      "id": "f5d71b6f-fa3e-4456-96d1-9862f438fc06",
+      "id": "724ab181-8562-4cb3-a146-26eb90720dfd",
       "name": "getUssdString",
       "request": {
         "name": "getUssdString",
@@ -68,7 +68,7 @@
       "event": []
     },
     {
-      "id": "526d31a3-0e0e-449c-8021-d891785b184a",
+      "id": "fbab8cd2-d492-4734-94af-0500deafdd62",
       "name": "GetCustomerDetails",
       "request": {
         "name": "GetCustomerDetails",
@@ -109,7 +109,7 @@
   "event": [],
   "variable": [],
   "info": {
-    "_postman_id": "9040590f-aa6b-4468-a5a8-68b20efc89b9",
+    "_postman_id": "15c222d9-752b-46b1-8b96-51a8c8b0ec26",
     "name": "Ussd Wallet Funding_Collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   }

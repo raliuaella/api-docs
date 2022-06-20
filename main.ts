@@ -1,3 +1,4 @@
+import path from "path";
 import { DirectoryCrawler } from "./core/DirectoryCrawler";
 import { FileScanner } from "./core/FileScanner";
 import { JsonSchema } from "./core/JsonSchema";
@@ -5,7 +6,7 @@ import { lexer } from "./core/lexer/Lexer";
 //import { Parser } from "./core/Parser";
 
 // file scabber
-const dir = new DirectoryCrawler({ path: __dirname, ignore:["node_modules", "*.git", ".git", ".git"] })
+const dir = new DirectoryCrawler({ path: __dirname, ignore:["node_modules", "*.git", ".git", ".git", ".gitignore"] })
 const files: string[] = dir.walk()
 console.log(files)
 const fsScanner = new FileScanner(files[4], { isRelative: false })

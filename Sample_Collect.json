@@ -1,7 +1,7 @@
 {
   "item": [
     {
-      "id": "17a8601e-aa85-4637-9184-05e1f79f6760",
+      "id": "b65b3984-ab51-4d79-98d8-c1aadf168e72",
       "item": [
         {
           "name": "BankLisiting",
@@ -24,8 +24,8 @@
               "path": [
                 "bank-listing"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/WalletController api/WalletController/bank-listing/'bank-listing'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'bank-listing'"
             },
             "description": {
               "content": "'returns list of banks in the system'"
@@ -43,8 +43,8 @@
               "path": [
                 "ussd-string/{{userid}}"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/WalletController api/WalletController/ussd-string/'ussd-string'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'ussd-string'"
             },
             "description": {
               "type": [
@@ -55,7 +55,10 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}"
+              "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}",
+              "description": {
+                "type": "application/json"
+              }
             }
           }
         },
@@ -69,8 +72,8 @@
               "path": [
                 "customer-details"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/WalletController api/WalletController/customer-details/'customer-details'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'customer-details'"
             },
             "description": {
               "type": [
@@ -81,7 +84,10 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\"customerRef\":\"''\"}"
+              "raw": "{\"customerRef\":\"''\"}",
+              "description": {
+                "type": "application/json"
+              }
             },
             "header": [
               {
@@ -97,7 +103,7 @@
       "name": "WalletController"
     },
     {
-      "id": "bb77e217-ee70-4a0b-b9d8-404a26c5eee5",
+      "id": "c4446c34-6fd4-4008-bec6-3a1566d0c834",
       "item": [
         {
           "name": "Authenticate",
@@ -120,8 +126,8 @@
               "path": [
                 "authenticate"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/FirstBank api/transfer/v2/authenticate/authenticate"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/authenticate"
             },
             "description": {},
             "method": "POST"
@@ -137,14 +143,17 @@
               "path": [
                 "resolveAccount"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/FirstBank api/transfer/v2/resolveAccount/'resolveAccount'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'resolveAccount'"
             },
             "description": {},
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json"
+              }
             }
           }
         },
@@ -158,14 +167,17 @@
               "path": [
                 "transferFund"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/FirstBank api/transfer/v2/transferFund/'transferFund'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'transferFund'"
             },
             "description": {},
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json"
+              }
             }
           }
         },
@@ -179,14 +191,17 @@
               "path": [
                 "getBalance/{{accountNumber}}"
               ],
-              "host": "{{apiBaseUrl}}",
-              "raw": "/FirstBank api/transfer/v2/getBalance/'getBalance'"
+              "host": "localhost:8090/api/v1",
+              "raw": "{{apiBaseUrl}}/'getBalance'"
             },
             "description": {},
             "method": "GET",
             "body": {
               "mode": "raw",
-              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}"
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json"
+              }
             }
           }
         }
@@ -204,7 +219,7 @@
     }
   ],
   "info": {
-    "_postman_id": "90d1a24d-441d-441d-bfd6-bb142c10aca3",
+    "_postman_id": "5e68458c-0533-472f-8811-a32ebf45aa3a",
     "name": "Ussd Wallet Funding_Collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   }

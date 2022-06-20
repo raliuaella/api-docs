@@ -201,7 +201,7 @@ export class JsonSchema {
                     if (t.RequestName) {
                         //item["name"] = currentInput.RequestName
                        //let request: any = {} 
-                       let request: Request = new Request('null')
+                       let request: any = {}
                         
                         //  for(let t of tokenCollections) {
 
@@ -243,10 +243,11 @@ export class JsonSchema {
                             request['url'] = {
                                 protocol: "http",
                                 query: queries,
-                                path: [(methodPath['pth'] + urlParam).replace(/[\']+/g, '')],
-                               // host: JoinWith('/', <string>this.options.Host, <string>this.options.BasePath),
-                                host: '{{apiBaseUrl}}',
-                                raw: url + '/' + methodPath['path']
+                                path: [(methodPath['path'] + urlParam).replace(/[\']+/g, '')],
+                                host: JoinWith('/', <string>this.options.Host, <string>this.options.BasePath),
+                                //host: '{{apiBaseUrl}}',
+                                //raw: url + '/' + methodPath['path']
+                                raw: '{{apiBaseUrl}}'+ '/' + methodPath['path']
 
                             }
                             request['description'] = {
@@ -260,8 +261,8 @@ export class JsonSchema {
                                     mode: "raw",
                                     raw: JSON.stringify(t.Body),
                                     description: {
-                                        "type":"",
-                                        content:""
+                                        type: "application/json",
+                                        content: t.Description
                                     }
                                 }
                             }

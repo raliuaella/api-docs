@@ -21,7 +21,13 @@ export type LexerTokens = {
     Folder?: Array<string> | null
     Path?: string | null
     ControllerName?: string
-    
+    Post?: string | null
+    Url?: string | null
+    Put?: string | null
+    Delete?: string | null
+    Get?: string | null
+    Options?: string | null
+    Head?: string | null
     
 }
 

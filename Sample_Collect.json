@@ -1,7 +1,7 @@
 {
   "item": [
     {
-      "id": "b65b3984-ab51-4d79-98d8-c1aadf168e72",
+      "id": "853a735b-7ca2-4a81-bc91-3d7598fb09a5",
       "item": [
         {
           "name": "BankLisiting",
@@ -103,7 +103,7 @@
       "name": "WalletController"
     },
     {
-      "id": "c4446c34-6fd4-4008-bec6-3a1566d0c834",
+      "id": "051bbdba-f5c3-46c1-9e49-29749cc7fd3a",
       "item": [
         {
           "name": "Authenticate",
@@ -219,7 +219,7 @@
     }
   ],
   "info": {
-    "_postman_id": "5e68458c-0533-472f-8811-a32ebf45aa3a",
+    "_postman_id": "aa751c4b-8909-4f56-9359-3aaceb81bb66",
     "name": "Ussd Wallet Funding_Collection",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   }

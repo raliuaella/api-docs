@@ -12,7 +12,7 @@ export const lexer = (inputs: string[]) => {
    // console.log('neLines ', newLines)
     lines = [...newLines]
     let allTokenValues = getAllTokenValues(lines)
- //console.log(allTokenValues)
+    console.log(allTokenValues)
     //newLinesRegex.test()
     let counter: number = 0;
     let tokens: LexerTokens[] = [];

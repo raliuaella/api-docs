@@ -10,7 +10,7 @@ const lexer = (inputs) => {
     // console.log('neLines ', newLines)
     lines = [...newLines];
     let allTokenValues = (0, String_Helper_1.getAllTokenValues)(lines);
-    //console.log(allTokenValues)
+    console.log(allTokenValues);
     //newLinesRegex.test()
     let counter = 0;
     let tokens = [];

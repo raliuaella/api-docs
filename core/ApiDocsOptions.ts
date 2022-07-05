@@ -6,5 +6,6 @@ export type ApiDocsOptions = {
     Headers?: object | null | undefined,
     Host?: string | null | undefined,
     BasePath?: string | null | undefined,
-    CollectionName?: string | null
+    CollectionName?: string | null,
+    OutputDir?: string
 }

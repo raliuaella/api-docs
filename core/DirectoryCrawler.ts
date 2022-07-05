@@ -19,29 +19,9 @@ export class DirectoryCrawler {
             //console.log("fold", folder)
 
             if (folder != null || folder != ' ' || folder != '') {
-
-                // if (folder.toLowerCase() == '.gitignore' || folder.toLowerCase() == '.dockerignore') {
-                //     const fileContentBuffer = readFileSync(path.join(<string>this.options.path, folder))
-                //     let content = fileContentBuffer.toString().split(/\r?\n/)
-                //     for (let s of content) {
-                //         let ignore = new GlobSync(s)
-                //         this.filesOrFoldersToIgnore.push(...ignore.found)
-                //     }
-                // }
-                // else {
                     let ignore = new GlobSync(folder)
                     this.filesOrFoldersToIgnore.push(...ignore.found)
-               // }
-                
             }
-
-
-            // glob(folder, (er, matches) => {
-            //     if (!er) {
-            //        console.log(matches)
-            //         this.filesOrFoldersToIgnore.push(...matches)
-            //     }
-            // })
         }
 
         console.log("toIgnore", this.filesOrFoldersToIgnore)

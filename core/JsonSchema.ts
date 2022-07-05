@@ -1,5 +1,6 @@
 
 import { writeFileSync } from "fs";
+import { join } from "path";
 import { Collection, Item, ItemGroup, Request, Variable } from "postman-collection";
 import { ApiDocsOptions } from "./ApiDocsOptions";
 import { JoinWith } from "./Helper/String.Helper";
@@ -322,10 +323,9 @@ export class JsonSchema {
 
 
 
+        let outputpath = join(this.options.OutputDir || __dirname, this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json')
 
-
-        writeFileSync(this.options && this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json',
-            JSON.stringify(collection, null, 2))
+        writeFileSync(outputpath,JSON.stringify(collection, null, 2))
     }
 
     private constructSwaggerObject() {

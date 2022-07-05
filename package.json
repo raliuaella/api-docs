@@ -3,9 +3,19 @@
   "version": "0.0.11",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "apidocs":"index.js"
+  },
   "scripts": {
     "test": "npm run build && node main.js",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "build:dev":"tsc -p .",
+    "start:dev": "npm run build && ts-node index.ts",
+    "tsc":"tsc",
+    "apidocs":"./bin/index.js",
+    "chmod": "chmod u+x ./bin/index.js",
+    "build:prod":"npm run build && npm run chmod",
+    "start:prod": "npm run build:prod && npm run apidocs"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +26,21 @@
     "commander": "^9.3.0",
     "figlet": "^1.5.2",
     "glob": "^8.0.3",
+    "kleur": "^4.1.5",
     "path": "^0.12.7",
-    "postman-collection": "^4.1.4"
+    "postman-collection": "^4.1.4",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^2.4.0",
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "@liftr/tscov": "^2.0.0",
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.4",
     "@types/glob": "^7.2.0",
-    "@types/postman-collection": "^3.5.7"
+    "@types/inquirer": "^8.2.1",
+    "@types/postman-collection": "^3.5.7",
+    "@types/yargs": "^17.0.10",
+    "typedoc": "^0.23.5"
   }
 }

@@ -2,19 +2,17 @@
   "name": "api-docs-generator",
   "version": "0.0.11",
   "description": "",
-  "main": "index.js",
-  "bin": {
-    "apidocs":"index.js"
-  },
+  "main": "bin/index.js",
+  "bin": "bin/index.js",
   "scripts": {
     "test": "npm run build && node main.js",
     "build": "tsc -p tsconfig.json",
-    "build:dev":"tsc -p .",
+    "build:dev": "tsc -p .",
     "start:dev": "npm run build && ts-node index.ts",
-    "tsc":"tsc",
-    "apidocs":"./bin/index.js",
+    "tsc": "tsc",
+    "apidocs": "./bin/index.js",
     "chmod": "chmod u+x ./bin/index.js",
-    "build:prod":"npm run build && npm run chmod",
+    "build:prod": "npm run build && npm run chmod",
     "start:prod": "npm run build:prod && npm run apidocs"
   },
   "keywords": [],

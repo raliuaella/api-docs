@@ -6,11 +6,11 @@
   "bin": "bin/index.js",
   "scripts": {
     "test": "npm run build && node main.js",
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run build:dev && npm run chmod",
     "build:dev": "tsc -p .",
     "start:dev": "npm run build && ts-node index.ts",
     "tsc": "tsc",
-    "apidocs": "./bin/index.js",
+    "apidocs": "node ./bin/index.js",
     "chmod": "chmod u+x ./bin/index.js",
     "build:prod": "npm run build && npm run chmod",
     "start:prod": "npm run build:prod && npm run apidocs"

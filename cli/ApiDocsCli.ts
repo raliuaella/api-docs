@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
 import { ApiDocsOptions } from "../core/ApiDocsOptions";
 import { DirectoryCrawler } from "../core/DirectoryCrawler";
 import { FileScanner } from "../core/FileScanner";
@@ -6,51 +8,55 @@ import { lexer } from "../core/lexer/Lexer";
 import { LexerTokens } from "../core/lexer/LexerTokens.type";
 
 export class ApiDocsCli {
-    constructor(private options: any) {
+    constructor(private jsonFile?:string) {
 
-        this.apiOptions["dirToCrawl"] = this.options["dirToCrawl"] ? this.options["dirToCrawl"]:__dirname
-        this.apiOptions["dirToIgnore"] = this.options["dirToIgnore"] ? this.options["dirToIgnore"]: ["node_modules", "*.git", ".git", ".git", ".gitignore"]
-        this.apiOptions["OutputDir"] = this.options["OutputDir"]
-     }
+        // this.apiOptions["dirToCrawl"] = this.options ? this.options["dirToCrawl"] : null
+        // this.apiOptions["dirToIgnore"] = this.options ? this.options["dirToIgnore"] : null
+        // this.apiOptions["OutputDir"] = this.options ? this.options["OutputDir"] : null
 
-    private apiOptions: any= {}
+        this.init()
+    }
+
+    private apiOptions: any = { isCliInitialized: false }
     //private _lexer: LexerTokens;
 
-    init(options: object = {}) {
-        if (Array.from(Object.keys(options)).length == 0) {
-            // AppTitle?: string | null | undefined,
-            // Description?: string | null | undefined,
-            // version?: string | null | undefined,
-            // BaseUrl: string | null | undefined,
-            // Headers?: object | null | undefined,
-            // Host?: string | null | undefined,
-            // BasePath?: string | null | undefined,
-            // CollectionName?: string | null
-
-            let _options: ApiDocsOptions = {
-                AppTitle: __dirname + "_collection",
-                BaseUrl: "http://localhost",
-                version: "version1",
-                CollectionName: __dirname + "collection"
+    init() {
+        this.apiOptions["isCliInitialized"] = true
+        if(!this.jsonFile) {
+            let apiDoscJsonFile = join(__dirname, "../../", "api-docs.json")
+            if (existsSync(apiDoscJsonFile)) {
+                this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
             }
-
-            this.apiOptions = {..._options}
-
+            else {
+                apiDoscJsonFile = join(this.jsonFile as string)
+                this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
+            }
         }
+        // if (Array.from(Object.keys(this.apiOptions)).length == 0 || Array.from(Object.keys(this.apiOptions)).length == 1) {
+        //     let apiDoscJsonFile = join(__dirname, "../../", "api-docs.json")
+        //     if (existsSync(apiDoscJsonFile)) {
+        //         this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
+        //     }
+        //     else {
+        //         this.apiOptions = { ...this.options }
+        //     }
+        // }
     }
 
     private LexerToken(): Array<LexerTokens> {
 
+        console.log("options ", this.apiOptions)
+
         let dirCrawler: DirectoryCrawler = new DirectoryCrawler({
             "directoryToRead": this.apiOptions["dirToCrawl"],
-            path:this.apiOptions["dirToCrawl"],
+            path: this.apiOptions["dirToCrawl"],
             "ignore": this.apiOptions["dirToIgnore"]
         })
         let files: Array<string> = dirCrawler.walk()
         let lexers = []
         for (let file of files) {
             const fsScanner = new FileScanner(file, { isRelative: false })
-        
+
             //console.log(fsScanner.ReadAllLines())
             const _lexer = lexer(fsScanner.ReadAllLines())
             lexers.push(..._lexer)
@@ -58,10 +64,19 @@ export class ApiDocsCli {
         return lexers
     }
 
+    public static get getDefault() {
+        return new ApiDocsCli();
+    }
+
+    get apiOptionsObject() {
+        return this.apiOptions
+    }
+
     CreateCollection() {
         let tokens = this.LexerToken()
+        console.log("tokens", tokens)
         let schema: JsonSchema = new JsonSchema(tokens, this.apiOptions)
 
-       schema.CreateCollection()
+        schema.CreateCollection()
     }
 }

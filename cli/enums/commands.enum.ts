@@ -4,5 +4,6 @@ export const CommandEnums = {
     CREATE:"create",
     help: "help",
     LongVersion: "--version",
-    ShortVersion: "-v"
+    ShortVersion: "-v",
+    INIT:"init"
 }

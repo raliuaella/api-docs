@@ -1,11 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.EnumToList = void 0;
-const LexerTokenTypes_1 = require("../lexer/LexerTokenTypes");
-const EnumToList = () => {
+var LexerTokenTypes_1 = require("../lexer/LexerTokenTypes");
+var EnumToList = function () {
     return Object.keys(LexerTokenTypes_1.LexerTokenTypes)
-        .filter((v) => !isNaN(Number(v)))
-        .map((x, index, array) => {
+        .filter(function (v) { return !isNaN(Number(v)); })
+        .map(function (x, index, array) {
         return {
             id: index,
             name: x

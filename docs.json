@@ -1,0 +1,11 @@
+{
+    "AppTitle":"UssdWalletFunding",
+    "version":"v1",
+    "CliVersion":"0.0.11",
+    "Description":"The USSD WALLET FUNDING",
+    "BaseUrl":"https://ussd.aellapp.com/",
+    "Headers":{
+        "Content-Type":"application/json",
+        "x-aella-user":"v1"
+    }
+}

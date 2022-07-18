@@ -6,5 +6,8 @@
     "BaseUrl":"https://ussd.aellapp.com/",
     "Headers":{
         
-    }
+    },
+    "dirToIgnore":[".gitignore", "*.json"],
+    "dirToCrawl":".",
+    "OutpurDir":"samples"
 }

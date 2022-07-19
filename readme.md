@@ -26,8 +26,6 @@ The library expect you to define a file named api-docs.json at the root of your 
 ```apidocs.json
 {
     "AppTitle":"json_schema",
-    "version":"v1",
-    "CliVersion":"0.0.11",
     "Description":"The USSD WALLET FUNDING",
     "BaseUrl":"https://ussd.aellapp.com",
     "BasePath":"api/v2",
@@ -59,10 +57,43 @@ Method can come in two forms <br />
 (a) @Method({MethodName};{HttpMethod};{EndpointPath})
 (b) Method=({MethodName};{HttpMethod};{EndpointPath}) <br />
 
-If you follow above pattern, then the values provided inside the parenthesis will be splitted by ; (comma). Otherwise, you can specify your endpoint method in the following <br />
-@{Httpmethod>}({RequestName};{EndpointPath})
-@MethodName({Requestname})
-HttpMethod can be any of the following [POST, GET, HEAD, PUT, OPTIONS, DELETE etc], if you define your endpoint 
+If you follow above pattern, then the values provided inside the parenthesis will be splitted by <strong>; (comma)</strong>. Otherwise, you can specify your endpoint method in the following <br />
+
+<strong>@{Httpmethod>}({RequestName};{EndpointPath})
+@MethodName({Requestname}) </strong>
+HttpMethod can be any of the following [POST, GET, HEAD, PUT, OPTIONS, DELETE etc], if you define your endpoint <br />
+
+<strong>@Query({pageIndex:1})</strong> @Query is use to specify query string of your endpoint <br />
+<strong>@Params({})</strong> @Params is used to specify route params on your endpoint
+
+<strong>@Headers({})</strong> @Headers is used to specify the list of headers on your endpoint<br />
+<strong>@Body({})</strong> @Body is used to specify the body request of your endpoint
+
+## Typical Example
+See below an example of how to use the attributes explained above
+```cli
+/// @Controller(WalletController, 'api/wallet')
+  export class WalletFundingController {
+   // private serviceName: string;
+    constructor() {
+      this.serviceName = this.config.get<string>('SERVICE_NAME');
+    }
+
+     /// Method=BankLisiting;GET;'bank-listing')
+    /// @Produces([application/json])
+    /// Query({pageIndex:1,pageSize:10})
+    /// @Description('returns list of banks in the system')
+    /// @Folder([Bank, Listing]) for version 2.0
+    async BankShortCodeListing() {
+       
+     // return SuccessResponse(res, await this.service.ListBanks(), this.serviceName);
+    }
+  }
+
+```
+
+
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

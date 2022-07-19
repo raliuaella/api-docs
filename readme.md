@@ -1,7 +1,7 @@
 # Api-Docs-Generator
 
 Api-Docs-Generator is a nodejs library that automatically generate postman collection, postman api documentation and gitbook.
-Although this is a preview version, which means the library will and continue to undergo serious testing and contributions from anyone interested the project. Api Documentation and Gitbook will be available in subsequent version
+Although this is a preview version, which means the library will and continue to undergo serious testing and contributions from anyone interested in the project. Api Documentation and Gitbook will be available in subsequent version.
 
 ## Installation
 
@@ -41,16 +41,19 @@ The library expect you to define a file named api-docs.json at the root of your 
     "dirToIgnore":[".gitignore", "*.json"]
 }
 ```
-The OutputDir specify the directory where the collection file will be generated to,
-dirToIgnore specifify the list of files/directories to ignore while crawling/scanning your directory for attributes used to generate file
-dirToCrawl specify the directory that will be used for scanning of the directories. It is default to . except you specify otherwise
+The <strong>OutputDir </strong> specify the directory where the collection file will be generated to,
+dirToIgnore specifify the list of files/directories to ignore while crawling/scanning your directory for attributes used to generate file, <strong>
+dirToCrawl </strong> specify the directory that will be used for scanning of the directories. It is default to . except you specify otherwise
 
-after the the library has scanned and reviewed the content of api-docs.json, please run
-apidocs init --file=docs.json where --file will be specified when you need to override the default configuration settings
+after the the library has scanned and reviewed the content of api-docs.json, please run 
+<br />
+```cli  
+    apidocs init --file=docs.json where --file will be specified when you need to override the default configuration settings
+```
 
 List Of Attribute
 Note: {}  means required, [] means optional <br />
-@Controller({ControllerName}, [ControllerPath]) = ControllerName is the name of controller, controller path is path/route of the controller that other endpiont witll follow e.g. api/v2/usercontroller etc
+<strong>@Controller({ControllerName}, [ControllerPath]) </strong> = ControllerName is the name of controller, controller path is path/route of the controller that other endpiont witll follow e.g. api/v2/usercontroller etc
 
 Method can come in two forms <br />
 (a) @Method({MethodName};{HttpMethod};{EndpointPath})

@@ -49,16 +49,16 @@ after the the library has scanned and reviewed the content of api-docs.json, ple
 apidocs init --file=docs.json where --file will be specified when you need to override the default configuration settings
 
 List Of Attribute
-Note: <>  means required, [] means optional
-@Controller(<ControllerName>, [ControllerPath]) = ControllerName is the name of controller, controller path is path/route of the controller that other endpiont witll follow e.g. api/v2/usercontroller etc
+Note: {}  means required, [] means optional <br />
+@Controller({ControllerName}, [ControllerPath]) = ControllerName is the name of controller, controller path is path/route of the controller that other endpiont witll follow e.g. api/v2/usercontroller etc
 
-Method can come in two forms
-(a) @Method(<MethodName>;<HttpMethod>;<EndpointPath>)
-(b) Method=(<MethodName>;<HttpMethod>;<EndpointPath>) <br />
+Method can come in two forms <br />
+(a) @Method({MethodName};{HttpMethod};{EndpointPath})
+(b) Method=({MethodName};{HttpMethod};{EndpointPath}) <br />
 
 If you follow above pattern, then the values provided inside the parenthesis will be splitted by ; (comma). Otherwise, you can specify your endpoint method in the following <br />
-@<Httpmethod>(<RequestName>;<EndpointPath>)
-@MethodName(<Requestname>)
+@{Httpmethod>}({RequestName};{EndpointPath})
+@MethodName({Requestname})
 HttpMethod can be any of the following [POST, GET, HEAD, PUT, OPTIONS, DELETE etc], if you define your endpoint 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

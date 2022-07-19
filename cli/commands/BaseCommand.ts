@@ -1,6 +1,6 @@
 import { ApiDocsCli } from "../ApiDocsCli"
 
-export class BaseCommand {
+export default class BaseCommand {
     constructor(name:string, descr:string, args = [], options:any[] = []) {
         this.command = name
         this.help = descr
@@ -20,6 +20,10 @@ export class BaseCommand {
     getResult() {
         return this.result
     }
+
+    // static get instance() {
+    //     return this;
+    // }
 
     definition() {
         return {

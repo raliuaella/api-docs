@@ -1,12 +1,12 @@
 import { readFileSync } from "fs"
 import { ApiDocsCli } from "../ApiDocsCli"
-import { BaseCommand } from "./BaseCommand"
+import BaseCommand from "./BaseCommand"
 
 
 
-export class InitCommand extends BaseCommand {
+export default class InitCommand extends BaseCommand {
 
-    constructor() {
+    constructor(cli?: ApiDocsCli) {
         super(
             "init",
             "initialize new settings",
@@ -17,12 +17,18 @@ export class InitCommand extends BaseCommand {
         )
     }
 
-    action(options:any):void {
-       if(options.file) {
-            let cli: ApiDocsCli = new ApiDocsCli(options.file)
-            cli.init()
-            this.result = cli
-            this.cli = cli
-       }
+    static get instance() {
+        return new InitCommand()
+    }
+
+    action(options: any): object {
+        let apidDocsCli = new ApiDocsCli()
+        let returnValue = apidDocsCli.init(options.file)
+       // console.log("returnValue ", returnValue)
+        apidDocsCli.CreateCollection(returnValue)
+        apidDocsCli.apiOptionsObject = returnValue
+
+        return this.cli.apiOptionsObject
+
     }
 }

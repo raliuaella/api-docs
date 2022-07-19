@@ -156,9 +156,11 @@ export class JsonSchema {
 
     public CreateCollection() {
         // initialize a new instance of postman collection
+        console.log("apiCollectionOptions ", this.options)
+        let controllerValue: string = ''
         const collection = new Collection({
             info: {
-                "name": this.options.AppTitle + "_Collection", "version": <string>this.options.version
+                "name": this.options.AppTitle + "_collection", "version": <string>this.options.version
             }
         })
 
@@ -177,9 +179,9 @@ export class JsonSchema {
 
 
                 itemgroup['name'] = v as string
-                console.log("controller name", v)
+                //  console.log("controller name", v)
                 let inputs = this.inputs.filter(x => x.ControllerName?.toLocaleLowerCase() == v?.toLocaleLowerCase())
-                console.log("inputs ", inputs)
+                //console.log("inputs ", inputs)
                 // let items = [] // outer item
                 for (let t of inputs) {
 
@@ -193,6 +195,7 @@ export class JsonSchema {
 
                     if (t.TokenType.toUpperCase() == LexerTokenTypes.Controller.toUpperCase()) {
                         folderName = t.KeyValue as string
+                        controllerValue = folderName
                     }
 
 
@@ -201,9 +204,9 @@ export class JsonSchema {
                     //let request = new Request();
                     if (t.RequestName) {
                         //item["name"] = currentInput.RequestName
-                       //let request: any = {} 
-                       let request: any = {}
-                        
+                        //let request: any = {} 
+                        let request: any = {}
+
                         //  for(let t of tokenCollections) {
 
                         if (t.TokenType.toUpperCase() == LexerTokenTypes.Method.toUpperCase()) {
@@ -228,28 +231,29 @@ export class JsonSchema {
 
                             }
 
+                            // currentInput.ControllerPath.replace(/[\',\"]+/g, '')
                             if (t.Params) {
                                 let params: any = t.Params
                                 let urlquery = '/'
                                 for (let s of Array.from(Object.keys(params))) {
                                     urlquery += `{{${s}}}`
                                     paramsvalue.push(s)
-
-
                                 }
                                 urlParam += urlquery
-                                // url += urlquery
-
                             }
+                           // console.log("currentKeyValue", currentInput.ControllerPath.replace(/[\',\"]+/g, ''))
+                          //  console.log("basePath",<string>this.options.BasePath?.trim())
+                            let controllerPathSplitted:string[] = currentInput.ControllerPath.replace(/[\'\"]+/g, '').split(",")
+                            //console.log("currentKeyValue", controllerPathSplitted)
+                            //let fullMethodPath = JoinWith("/", currentInput.ControllerPath.replace(/[\',\"]+/g, ''), <string>this.options.BasePath?.trim(), (methodPath['path'] + urlParam).replace(/[\']+/g, ''))
+                            let controllerUrl = controllerPathSplitted.length > 1 ? controllerPathSplitted[1]:controllerPathSplitted[0]
                             request['url'] = {
                                 protocol: "http",
                                 query: queries,
                                 path: [(methodPath['path'] + urlParam).replace(/[\']+/g, '')],
-                                host: JoinWith('/', <string>this.options.Host, <string>this.options.BasePath),
-                                //host: '{{apiBaseUrl}}',
-                                //raw: url + '/' + methodPath['path']
-                                raw: '{{apiBaseUrl}}'+ '/' + methodPath['path']
-
+                                //path:[fullMethodPath],
+                                host: JoinWith('', <string>this.options.Host?.trim(), '/', <string>this.options.BasePath?.trim() || '', '/', controllerUrl.trim() || ''),
+                                raw: '{{apiBaseUrl}}' + '/' + methodPath['path']
                             }
                             request['description'] = {
                                 content: t.Description,
@@ -263,7 +267,7 @@ export class JsonSchema {
                                     raw: JSON.stringify(t.Body),
                                     description: {
                                         type: "application/json",
-                                        content: t.Description
+                                        content: "application/json"
                                     }
                                 }
                             }
@@ -304,12 +308,12 @@ export class JsonSchema {
 
                         item['request'] = request
 
-                        let itemsBefore = itemgroup.items.filter(x=>x.name.toLowerCase() == (t.RequestName?.toLowerCase()), null)
+                        let itemsBefore = itemgroup.items.filter(x => x.name.toLowerCase() == (t.RequestName?.toLowerCase()), null)
 
-                        if(!(itemsBefore.length > 0)) {
+                        if (!(itemsBefore.length > 0)) {
                             itemgroup.items.append(item)
                         }
-                        
+
                     }
                 }
 
@@ -324,8 +328,8 @@ export class JsonSchema {
 
 
         let outputpath = join(this.options.OutputDir || __dirname, this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json')
-
-        writeFileSync(outputpath,JSON.stringify(collection, null, 2))
+        // console.log("outpath", outputpath)
+        writeFileSync(outputpath, JSON.stringify(collection, null, 2))
     }
 
     private constructSwaggerObject() {

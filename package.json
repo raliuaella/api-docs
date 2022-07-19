@@ -7,7 +7,7 @@
   "scripts": {
     "test": "npm run build && node main.js",
     "build": "npm run build:dev && npm run chmod",
-    "build:dev": "tsc -p .",
+    "build:dev": "tsc -p tsconfig.json",
     "start:dev": "npm run build && ts-node index.ts",
     "tsc": "tsc",
     "apidocs": "node ./bin/index.js",

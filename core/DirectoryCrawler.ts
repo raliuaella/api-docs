@@ -61,26 +61,17 @@ export class DirectoryCrawler {
         while (i < dirs.length) {
             const dir = dirs[i];
             const dirents = readdirSync(dir);
-            dirents.forEach((f) => {
-
+            dirents.forEach((f) => {      
                 // fstat(dirent, (er, stat: Stats)=>{
                 let fullPath: string = `${dir}${path.sep}${f}`;
                 //console.log("direct " + fullPath)
                 let fileStat = statSync(fullPath)
-
                 if (!(ignoreFolders.includes(f))) {
-
-
                     if (fileStat.isDirectory()) {
-
                         dirs.push(fullPath);
                     } else {
-
                         paths.push(fullPath);
-
-
                     }
-
                 }
             });
             ++i;

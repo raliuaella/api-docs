@@ -24,9 +24,8 @@ export const parseQuery = (input: string): string => {
     const inputParseObject = input.replace(/[\']+?/, '').replace('(', '').replace(')', '')
 
     const parsedObject = inputParseObject
-    const splittedString = (parsedObject.replace('{', '').replace('}', '')).split(',')
+    const splittedString = (parsedObject.replace(/[\{\}]/, '')).split(',')
 
-    // {pageIndex:1,pageSize:10} = pageIndex:1,pageSize:10
     let outputstring = '?';
 
     for (let s of splittedString) {
@@ -35,16 +34,7 @@ export const parseQuery = (input: string): string => {
     }
 
     return outputstring
-    // const parsedObject = Object.create(JSON.parse(JSON.stringify(inputParseObject)))
-
-    // let outputstring = '';
-
-    // for(let key of Array.from(Object.keys(parsedObject))) {
-    //     const currentString = `${key}=${parsedObject[key]}&`
-    //     outputstring += currentString
-    // }
-
-    // return outputstring
+  
 }
 
 export const alllinesThatBeginWith = (testChar: RegExp, inputs: string[]): string[] => {
@@ -78,13 +68,11 @@ export const simpleStringToObject = (input: string): object => {
     return object
 }
 export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
-    const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes', '@folder']$/ig
-    const regex = new RegExp(matchString)
+   // console.log("allTokenInput ", inputs)
+   // const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes', '@folder']$/ig
     let response: TokenValue[] = []
     for(let input of inputs) {
         input = input.replace(/^\/\/\//g, '')
-        const matchedIndex: number  = 0
-      //  console.log(input)
       const splitInput = input.split("=")
       //console.log(splitInput)
       if(splitInput.length == 2) {

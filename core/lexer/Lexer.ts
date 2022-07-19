@@ -12,7 +12,7 @@ export const lexer = (inputs: string[]) => {
    // console.log('neLines ', newLines)
     lines = [...newLines]
     let allTokenValues = getAllTokenValues(lines)
-    console.log(allTokenValues)
+    //console.log(allTokenValues)
     //newLinesRegex.test()
     let counter: number = 0;
     let tokens: LexerTokens[] = [];
@@ -25,14 +25,10 @@ export const lexer = (inputs: string[]) => {
 
     while (counter < allTokenValues.length) {
         let currentLine: TokenValue = allTokenValues[counter];
-        //const splitByQuote = currentLine.split('\'')
-        //currentLine = currentLine[0] == '\'' 
         counter += 1
 
         let { type, value } = currentLine
         type = type.toUpperCase()
-        //console.log("type is", type)
-        //console.log("identify is ", LexerTokenTypes.Controller.toString().toUpperCase())
         const _id: string = generateTokenId()
         if (type == LexerTokenTypes.Controller.toString().toUpperCase()) {
             let controllervalue =  value.split(',')
@@ -41,7 +37,7 @@ export const lexer = (inputs: string[]) => {
                 _id,
                 KeyName: type,
                 KeyDataType: typeof(String).name,
-                KeyValue: controllervalue[0].replace(/[\'\"]+/g, ''),
+                KeyValue: controllervalue[1].replace(/[\'\"]+/g, ''),
                 ControllerPath: value.trim().replace(/[\'\"]+/g, ''),
                 TokenType: LexerTokenTypes.Controller,
                 ControllerName: controllerName
@@ -65,7 +61,7 @@ export const lexer = (inputs: string[]) => {
             currentToken.Consumes = []
             
             KeyValue.forEach((v:string)=>{
-                currentToken.Consumes?.push(v.trim().replace('[', '').replace(']', ''))
+                currentToken.Consumes?.push(v.trim().replace(/[\[\]]/, ''))
             })
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
@@ -78,7 +74,7 @@ export const lexer = (inputs: string[]) => {
             currentToken.Folder = []
             
             KeyValue.forEach((v:string)=>{
-                currentToken.Folder?.push(v.trim().replace('[', '').replace(']', ''))
+                currentToken.Folder?.push(v.trim().replace(/[\[\]]/, ''))
             })
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
             //tokens.push(token)
@@ -99,7 +95,7 @@ export const lexer = (inputs: string[]) => {
             currentToken.Produces = []
             
             KeyValue.forEach((v:string)=>{
-                currentToken.Produces?.push(v.trim().replace('[', '').replace(']', ''))
+                currentToken.Produces?.push(v.trim().replace(/[\[\]]/, ''))
             })
            
             const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)

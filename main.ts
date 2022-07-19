@@ -6,7 +6,7 @@ import { lexer } from "./core/lexer/Lexer";
 //import { Parser } from "./core/Parser";
 
 // file scabber
-const dir = new DirectoryCrawler({ path: __dirname, ignore: ["node_modules", "*.git", ".git", ".git", ".gitignore"] })
+const dir = new DirectoryCrawler({ directoryToRead:__dirname, path: __dirname, ignore: ["node_modules", "*.git", ".git", ".git", ".gitignore"] })
 const files: string[] = dir.walk()
 //console.log(files)
 

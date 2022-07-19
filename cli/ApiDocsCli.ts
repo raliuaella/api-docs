@@ -1,3 +1,4 @@
+import { execFileSync } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { ApiDocsOptions } from "../core/ApiDocsOptions";
@@ -8,45 +9,49 @@ import { lexer } from "../core/lexer/Lexer";
 import { LexerTokens } from "../core/lexer/LexerTokens.type";
 
 export class ApiDocsCli {
-    constructor(private jsonFile?:string) {
+    constructor(private options?:object) {
 
-        // this.apiOptions["dirToCrawl"] = this.options ? this.options["dirToCrawl"] : null
-        // this.apiOptions["dirToIgnore"] = this.options ? this.options["dirToIgnore"] : null
-        // this.apiOptions["OutputDir"] = this.options ? this.options["OutputDir"] : null
+       
 
-        this.init()
+       if(this.options)
+        {
+
+            this.apiOptions = {...this.options, ...this.apiOptions}
+        }
     }
 
     private apiOptions: any = { isCliInitialized: false }
     //private _lexer: LexerTokens;
 
-    init() {
+    init(jsonFile?:string) {
+        //console.log("initializing....", jsonFile)
         this.apiOptions["isCliInitialized"] = true
-        if(!this.jsonFile) {
+        if(!jsonFile) {
             let apiDoscJsonFile = join(__dirname, "../../", "api-docs.json")
             if (existsSync(apiDoscJsonFile)) {
                 this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
+                //console.log("apioptions ", this.apiOptions)
             }
             else {
-                apiDoscJsonFile = join(this.jsonFile as string)
-                this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
+                throw new Error("configuration file not specified")
             }
+            
         }
-        // if (Array.from(Object.keys(this.apiOptions)).length == 0 || Array.from(Object.keys(this.apiOptions)).length == 1) {
-        //     let apiDoscJsonFile = join(__dirname, "../../", "api-docs.json")
-        //     if (existsSync(apiDoscJsonFile)) {
-        //         this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
-        //     }
-        //     else {
-        //         this.apiOptions = { ...this.options }
-        //     }
-        // }
+        else {
+            const apiDoscJsonFile = join(jsonFile as string)
+            if(existsSync(apiDoscJsonFile)) {
+                this.apiOptions = { ...JSON.parse(Buffer.from(readFileSync(apiDoscJsonFile)).toString()) }
+               // console.log("apioptions ", this.apiOptions)
+                
+            }
+
+            return this.apiOptions
+           // console.log("apioptions ", this.apiOptions)
+            
+        }
     }
 
     private LexerToken(): Array<LexerTokens> {
-
-        console.log("options ", this.apiOptions)
-
         let dirCrawler: DirectoryCrawler = new DirectoryCrawler({
             "directoryToRead": this.apiOptions["dirToCrawl"],
             path: this.apiOptions["dirToCrawl"],
@@ -56,8 +61,6 @@ export class ApiDocsCli {
         let lexers = []
         for (let file of files) {
             const fsScanner = new FileScanner(file, { isRelative: false })
-
-            //console.log(fsScanner.ReadAllLines())
             const _lexer = lexer(fsScanner.ReadAllLines())
             lexers.push(..._lexer)
         }
@@ -72,11 +75,17 @@ export class ApiDocsCli {
         return this.apiOptions
     }
 
-    CreateCollection() {
+    set apiOptionsObject(value) {
+        this.apiOptions = value
+    }
+
+    CreateCollection(docsOptions?:object) {
         let tokens = this.LexerToken()
-        console.log("tokens", tokens)
-        let schema: JsonSchema = new JsonSchema(tokens, this.apiOptions)
+       // console.log("tokens", tokens)
+        let schema: JsonSchema = new JsonSchema(tokens, docsOptions ? docsOptions: this.apiOptions)
 
         schema.CreateCollection()
     }
+
+    
 }

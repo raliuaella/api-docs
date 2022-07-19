@@ -30,7 +30,7 @@ export const parseQuery = (input: string): string => {
 
     for (let s of splittedString) {
         const obj = s.split(":")
-        outputstring += `${obj[0]}=${obj[1]}&`
+        outputstring += `${obj[0].trim()}=${obj[1].trim()}&`
     }
 
     return outputstring
@@ -74,7 +74,6 @@ export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
     for(let input of inputs) {
         input = input.replace(/^\/\/\//g, '')
       const splitInput = input.split("=")
-      //console.log(splitInput)
       if(splitInput.length == 2) {
           const value = {
               type: splitInput[0].trim(),
@@ -85,7 +84,6 @@ export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
 
       if(splitInput.length == 1) {
           const resplit = splitInput[0].split('(')
-         // console.log(resplit[1])
           if(resplit.length > 1) {
 
             const value = {

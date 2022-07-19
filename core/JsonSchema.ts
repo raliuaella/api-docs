@@ -1,5 +1,5 @@
 
-import { writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Collection, Item, ItemGroup, Request, Variable } from "postman-collection";
 import { ApiDocsOptions } from "./ApiDocsOptions";
@@ -156,7 +156,6 @@ export class JsonSchema {
 
     public CreateCollection() {
         // initialize a new instance of postman collection
-        console.log("apiCollectionOptions ", this.options)
         let controllerValue: string = ''
         const collection = new Collection({
             info: {
@@ -170,19 +169,16 @@ export class JsonSchema {
                 value: this.options.BaseUrl ? this.options.BaseUrl : JoinWith('/', <string>this.options.Host, <string>this.options.BasePath)
             }))
         }
-        let controllers = this.inputs.filter(x => x.ControllerName != null || x.ControllerName != '' || x.ControllerName != " ").map(x => { return x.ControllerName })
+        const controllers = this.inputs.filter(x => x.ControllerName != null || x.ControllerName != '' || x.ControllerName != " ").map(x => { return x.ControllerName })
 
         controllers.forEach((v) => {
             let itemgroup = new ItemGroup<Item>();
 
             if (v) {
 
-
                 itemgroup['name'] = v as string
-                //  console.log("controller name", v)
                 let inputs = this.inputs.filter(x => x.ControllerName?.toLocaleLowerCase() == v?.toLocaleLowerCase())
-                //console.log("inputs ", inputs)
-                // let items = [] // outer item
+                
                 for (let t of inputs) {
 
                     let folderName: string = ''
@@ -197,8 +193,6 @@ export class JsonSchema {
                         folderName = t.KeyValue as string
                         controllerValue = folderName
                     }
-
-
                     // item['name'] = folderName
 
                     //let request = new Request();
@@ -221,10 +215,10 @@ export class JsonSchema {
                                 let query: any = t.Query
                                 let urlquery = '?'
                                 for (let s of Array.from(Object.keys(query))) {
-                                    urlquery += `${s}=${query[s]}&`
+                                    urlquery += `${s}=${query[s].trim()}&`
                                     queries.push({
-                                        key: s,
-                                        name: s,
+                                        key: s.trim(),
+                                        name: s.trim(),
                                         value: query[s]
                                     })
                                 }
@@ -241,12 +235,10 @@ export class JsonSchema {
                                 }
                                 urlParam += urlquery
                             }
-                           // console.log("currentKeyValue", currentInput.ControllerPath.replace(/[\',\"]+/g, ''))
-                          //  console.log("basePath",<string>this.options.BasePath?.trim())
-                            let controllerPathSplitted:string[] = currentInput.ControllerPath.replace(/[\'\"]+/g, '').split(",")
+                            const controllerPathSplitted: string[] = currentInput.ControllerPath.replace(/[\'\"]+/g, '').split(",")
                             //console.log("currentKeyValue", controllerPathSplitted)
                             //let fullMethodPath = JoinWith("/", currentInput.ControllerPath.replace(/[\',\"]+/g, ''), <string>this.options.BasePath?.trim(), (methodPath['path'] + urlParam).replace(/[\']+/g, ''))
-                            let controllerUrl = controllerPathSplitted.length > 1 ? controllerPathSplitted[1]:controllerPathSplitted[0]
+                            const controllerUrl:string = controllerPathSplitted.length > 1 ? controllerPathSplitted[1] : controllerPathSplitted[0]
                             request['url'] = {
                                 protocol: "http",
                                 query: queries,
@@ -260,7 +252,7 @@ export class JsonSchema {
                                 type: t.Consumes
                             }
                             request['method'] = methodPath['HttpMethod'],
-                                request['name'] = methodPath['RequestName']
+                            request['name'] = methodPath['RequestName']
                             if (t.Body) {
                                 request['body'] = {
                                     mode: "raw",
@@ -268,6 +260,11 @@ export class JsonSchema {
                                     description: {
                                         type: "application/json",
                                         content: "application/json"
+                                    },
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
                                     }
                                 }
                             }
@@ -298,9 +295,9 @@ export class JsonSchema {
                                 let _header: any = t.Headers
                                 for (let s of Array.from(Object.keys(_header))) {
                                     request.header.push({
-                                        key: s,
-                                        name: s,
-                                        value: _header[s]
+                                        key: s.trim().replace(/[\']+/g, ''),
+                                        name: s.trim().replace(/[\']+/g, ''),
+                                        value: _header[s].trim().replace(/[\']+/g, '')
                                     })
                                 }
                             }
@@ -308,7 +305,7 @@ export class JsonSchema {
 
                         item['request'] = request
 
-                        let itemsBefore = itemgroup.items.filter(x => x.name.toLowerCase() == (t.RequestName?.toLowerCase()), null)
+                        const itemsBefore = itemgroup.items.filter(x => x.name.toLowerCase() == (t.RequestName?.toLowerCase()), null)
 
                         if (!(itemsBefore.length > 0)) {
                             itemgroup.items.append(item)
@@ -317,7 +314,7 @@ export class JsonSchema {
                     }
                 }
 
-                let isThereBefore = collection.items.filter(x => x.name == v, null)
+                const isThereBefore = collection.items.filter(x => x.name == v, null)
                 if (!(isThereBefore.length > 0))
                     collection.items.add(itemgroup)
 
@@ -325,9 +322,11 @@ export class JsonSchema {
 
         })
 
+        if (this.options.OutputDir) {
+            mkdirSync(this.options.OutputDir)
+        }
 
-
-        let outputpath = join(this.options.OutputDir || __dirname, this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json')
+        const outputpath:string = join(this.options.OutputDir || __dirname, this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json')
         // console.log("outpath", outputpath)
         writeFileSync(outputpath, JSON.stringify(collection, null, 2))
     }

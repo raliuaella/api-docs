@@ -1,5 +1,5 @@
   // name, url path
-  /// @Controller(WalletController, 'api/WalletController')
+  /// @Controller(WalletController, 'api/wallet')
   export class WalletFundingController {
    // private serviceName: string;
     constructor() {
@@ -11,7 +11,7 @@
    /// @Produces([application/json])
    /// Query({pageIndex:1,pageSize:10})
    /// @Description('returns list of banks in the system')
-   /// @Folder([Bank, Listing])
+   /// @Folder([Bank, Listing]) for version 2.0
     async BankShortCodeListing() {
        // console.log("data returned")
      // return SuccessResponse(res, await this.service.ListBanks(), this.serviceName);

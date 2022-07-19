@@ -37,7 +37,7 @@ export const lexer = (inputs: string[]) => {
                 _id,
                 KeyName: type,
                 KeyDataType: typeof(String).name,
-                KeyValue: controllervalue[1].replace(/[\'\"]+/g, ''),
+                KeyValue: controllervalue[1] ? controllervalue[1].replace(/[\'\"]+/g, ''):controllervalue[0].replace(/[\'\"]+/g, ''),
                 ControllerPath: value.trim().replace(/[\'\"]+/g, ''),
                 TokenType: LexerTokenTypes.Controller,
                 ControllerName: controllerName

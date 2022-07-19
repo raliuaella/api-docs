@@ -10,7 +10,7 @@
         "Content-Type":"application/json",
         "x-aella-user":"v1"
     },
-    "OutpurDir":"Samples",
+    "OutputDir":"Samples",
     "dirToCrawl":".",
     "dirToIgnore":[".gitignore", "*.json"]
 }

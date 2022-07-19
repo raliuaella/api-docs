@@ -1,226 +1,154 @@
 import { Console } from "console";
 import { EnumToList } from "../Helper/Enum.Helper";
-import { generateTokenId, unique } from "../Helper/String.Helper";
-import { Keywords } from "./identifier.enum";
-import { LexerTokens } from "./LexerTokens.type";
+import { alllinesThatBeginWith, generateTokenId, getAllTokenValues, simpleStringToObject, unique } from "../Helper/String.Helper";
+import { Identify } from "./identifier.enum";
+import { LexerTokens, TokenValue } from "./LexerTokens.type";
 import { LexerTokenTypes } from "./LexerTokenTypes";
 
 export const lexer = (inputs: string[]) => {
-    const lines = [...inputs]
+    let lines = [...inputs]
     //console.log("lines length " + lines.length)
+    const newLines = [...alllinesThatBeginWith(/^\/\/\//ig, lines)]
+   // console.log('neLines ', newLines)
+    lines = [...newLines]
+    let allTokenValues = getAllTokenValues(lines)
+    //console.log(allTokenValues)
+    //newLinesRegex.test()
     let counter: number = 0;
     let tokens: LexerTokens[] = [];
-    let identifiersList = EnumToList<Keywords>()
-    let tokenTypeList = EnumToList<LexerTokenTypes>()
-    // console.log("tokenTypeList ", tokenTypeList)
-    let ControllerPath: string = ''
-    let currentToken: LexerTokens;
+    // let identifiersList = EnumToList<Keywords>()
+    // let tokenTypeList = EnumToList<LexerTokenTypes>()
+    // // console.log("tokenTypeList ", tokenTypeList)
+    // let ControllerPath: string = ''
+    let currentToken: LexerTokens={_id:'', KeyDataType:'', KeyValue:'', KeyName:'', TokenType:'', ControllerPath:''};
+    let controllerName: string = ''
 
-    while (counter < lines.length) {
-        let currentLine: string = lines[counter].trim();
-        //const splitByQuote = currentLine.split('\'')
-        //currentLine = currentLine[0] == '\'' 
+    while (counter < allTokenValues.length) {
+        let currentLine: TokenValue = allTokenValues[counter];
         counter += 1
 
-        currentLine = currentLine.substring(4, currentLine.length).trim()
-        //console.log("current line " + currentLine)
-        // if (!startWithTripleSlash(currentLine))
-        //     continue;
-        if (currentLine == "\r\n")
-            continue;
-
-        const letCurrentLineSplit: string[] = currentLine.split(" ")
-        //console.log("splitted line ", letCurrentLineSplit)
-        letCurrentLineSplit.forEach((value: string) => {
-            console.log("current value ", value)
-            // const identifierFound: boolean = identifiersList.filter(x => x.name == value).length > 0;
-            //  if (identifierFound) {
-            if (value.includes("MethodName") || value.includes("@Method")) {
-                const splitCurrentValue: string[] = value.split("=")
-                //console.log("splt" , splitCurrentValue)
-                const putPostMethod: string[] = ["POST", "PUT"]
-                // console.log("spr", splitCurrentValue)
-                if (splitCurrentValue.length > 2)
-                    throw new Error("method not properly formated")
-                //                                0       1   2           3           4       5
-                // format here is MethodName=(RequestName, GET,someValue, query=null, params, headers)
-                if (splitCurrentValue.length == 2) {
-                    // (GET, 'wallet/fund', {userid=2,location=en}, {})
-                    const secondValue = splitCurrentValue[1].replace('(', '').replace(')', '');
-                    const methodSpecificationSplitted = secondValue.split(";")
-
-                    // console.log("spr", methodSpecificationSplitted)
-
-                    const m = methodSpecificationSplitted
-                    //const notFound: boolean = tokens.filter(x => x.RequestName == m[0]).length == 0
-                            // (Name, POST, 'wallet/fund', {userid=2,location=en}, {}, {userId: 23}, {})
-                            currentToken = {
-                                _id: generateTokenId(),
-                                KeyName: splitCurrentValue[0],
-                                KeyDataType: 'object',
-                                KeyValue: {
-                                    httpMethod: m[1],
-                                    path: m[2],
-                                    query: m[3],
-                                    params: m[4],
-                                    body: m[5]
-                                },
-                                RequestName: m[0],
-                                ControllerPath,
-                                TokenType: LexerTokenTypes.Method,
-                                Headers: m[6]
-                            }
-                            tokens.push(currentToken)
-                       // }
-                    // }
-
-                }
-
-                if (splitCurrentValue.length == 1) {
-                    // @Method(HTTPMETHOD, 'name/path', query, params)
-                    //              0       1          2            3                   4   5
-                    // @Method(RequestName, GET, 'wallet/fund', {userid=2,location=en}, {}, {})
-                    const methodNameValue = splitCurrentValue[0].replace('@Method', '').replace('(', '').replace('(', '')
-                    const methodSpecificationSplitted = methodNameValue.split(";")
-
-                    const m = methodSpecificationSplitted
-
-                   // const notFound: boolean = tokens.filter(x => x.RequestName == m[0]).length == 0
-                            //              0         1     2               3                   4   5
-                            // @Method(RequestName, GET, 'wallet/fund', {userid=2,location=en}, {}, {})
-                        currentToken = {
-                            _id: generateTokenId(),
-                            KeyName: splitCurrentValue[0],
-                            KeyDataType: 'object',
-                            KeyValue: {
-                                httpMethod: m[1],
-                                path: m[2],
-                                query: m[3],
-                                params: m[4],
-                                body: m[5]
-                            },
-                            RequestName: m[0],
-                            TokenType: LexerTokenTypes.Method,
-                            Headers: m[6],
-                            ControllerPath
-
-                        }
-                            tokens.push(currentToken)
-
-
-                }
-
+        let { type, value } = currentLine
+        type = type.toUpperCase()
+        const _id: string = generateTokenId()
+        if (type == LexerTokenTypes.Controller.toString().toUpperCase()) {
+            let controllervalue =  value.split(',')
+            controllerName = controllervalue[0].trim()
+            currentToken = {
+                _id,
+                KeyName: type,
+                KeyDataType: typeof(String).name,
+                KeyValue: controllervalue[1] ? controllervalue[1].replace(/[\'\"]+/g, ''):controllervalue[0].replace(/[\'\"]+/g, ''),
+                ControllerPath: value.trim().replace(/[\'\"]+/g, ''),
+                TokenType: LexerTokenTypes.Controller,
+                ControllerName: controllerName
             }
 
-            if(value.toLowerCase().includes("Consume") || value.toLowerCase().includes("@Consumes")) {
-                 ///@Consumes=([application/json, application/xml])
-                /// Produces=([application/json, text/csv])
-                const splitCurrentValue = value.split("=")
-                if(splitCurrentValue.length == 2) {
-                    let consumeValue = splitCurrentValue[1].replace("(", "").replace("(", "").replace("[","").replace("[","")
-                    console.log("consume value", consumeValue)
-                    if(currentToken) {
-                        currentToken.Consumes = [];
-                        const splitConsumes = consumeValue.trim().split(",")
+            tokens.push(currentToken)
 
-                        splitConsumes.forEach((v: string)=>{
-                            currentToken.Consumes?.push(v)
-                        })
-                    }
-                }
+        }
 
-                if(splitCurrentValue.length < 2) {
-                    let consumeValue = splitCurrentValue[1].replace(/[(,),\',@,Consume,Consumes, @consume, @consumes, [,\]]+/ig, '')
-                    if(currentToken) {
-                        currentToken.Consumes = [];
-                        const splitConsumes = consumeValue.trim().split(",")
+        if(type == LexerTokenTypes.Params.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
+            currentToken.Params = KeyValue
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
 
-                        splitConsumes.forEach((v: string)=>{
-                            currentToken.Consumes?.push(v)
-                        })
-                    }
-                                                        
-                }
-                const indexOfCurrentToken = tokens.findIndex(x=>x._id == currentToken._id)
-                tokens.splice(indexOfCurrentToken, 1, currentToken)
+        if(type == LexerTokenTypes.Consumes.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
+            currentToken.Consumes = []
+            
+            KeyValue.forEach((v:string)=>{
+                currentToken.Consumes?.push(v.trim().replace(/[\[\]]/, ''))
+            })
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Folder.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
+            currentToken.Folder = []
+            
+            KeyValue.forEach((v:string)=>{
+                currentToken.Folder?.push(v.trim().replace(/[\[\]]/, ''))
+            })
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Description.toString().toUpperCase()) {
+            currentToken.Description = value
+           
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Produces.toString().toUpperCase()) {
+            const KeyValue = value.split(",")
+           
+            currentToken.Produces = []
+            
+            KeyValue.forEach((v:string)=>{
+                currentToken.Produces?.push(v.trim().replace(/[\[\]]/, ''))
+            })
+           
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Headers.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
+            currentToken.Headers = KeyValue
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Query.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
+            //console.log("keyValue ", KeyValue)
+            currentToken.Query = KeyValue
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if(type == LexerTokenTypes.Body.toString().toUpperCase()) {
+            const KeyValue = simpleStringToObject(value)
+            currentToken.Body = KeyValue
+            const indexOfTokenToUpdate = tokens.findIndex(x=>x._id == currentToken._id)
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken)
+        }
+
+        if (type == LexerTokenTypes.Method.toString().toUpperCase()) {
+            const methodKeyValue = value.split(";")
+            if (methodKeyValue.length != 3)
+                throw new Error("parameter @Method/Method is not properly formatted")
+            const token: LexerTokens = {
+                _id,
+                RequestName: methodKeyValue[0],
+                KeyName: type,
+                KeyDataType: typeof(Object).name,
+                KeyValue: {
+                    RequestName: methodKeyValue[0],
+                    HttpMethod: methodKeyValue[1],
+                    path: methodKeyValue[2]
+                },
+                ControllerName: controllerName,
+                TokenType: LexerTokenTypes.Method,
+                ControllerPath: currentToken.ControllerPath
             }
-
-            if(value.toLowerCase().includes("Produces") || value.toLowerCase().includes("@Produces")) {
-                ///@Consumes=([application/json, application/xml])
-               /// Produces=([application/json, text/csv])
-               const splitCurrentValue = value.split("=")
-               if(splitCurrentValue.length == 2) {
-                   let consumeValue = splitCurrentValue[1].replace(/[(,), \],\[]+/ig, "").replace("(", "").replace("[","").replace("[","")
-                   console.log("produce value", consumeValue)
-                   if(currentToken) {
-                       currentToken.Produces = [];
-                       const splitConsumes = consumeValue.trim().split(",")
-
-                       splitConsumes.forEach((v: string)=>{
-                           currentToken.Consumes?.push(v)
-                       })
-                   }
-               }
-
-               if(splitCurrentValue.length < 2) {
-                   let consumeValue = splitCurrentValue[1].replace(/[(,),\',@,Product,Produces, @produce, @produces, [,\]]+/ig, '')
-                   if(currentToken) {
-                       currentToken.Produces = [];
-                       const splitConsumes = consumeValue.trim().split(",")
-
-                       splitConsumes.forEach((v: string)=>{
-                           currentToken.Consumes?.push(v)
-                       })
-                   }
-                                                       
-               }
-               const indexOfCurrentToken = tokens.findIndex(x=>x._id == currentToken._id)
-               tokens.splice(indexOfCurrentToken, 1, currentToken)
-           }
-
-            if (value.includes("ControllerName") || value.includes('@Controller')) {
-                const splitCurrentValue = value.split("=")
-                // console.log("spr", splitCurrentValue)
-                if (splitCurrentValue.length == 2) {
-                    if (splitCurrentValue[1].startsWith("/") || splitCurrentValue.includes("/"))
-                        throw new Error("the pattern ControllerName=value cannot start with or be in url path format, please use @Controller pattern instead")
-
-                    ControllerPath = splitCurrentValue[1]
-                    currentToken = {
-                        _id: generateTokenId(),
-                        KeyName: splitCurrentValue[0],
-                        KeyDataType: 'string',
-                        KeyValue: splitCurrentValue[1].replace('(', '').replace(')', '').replace(/[\']=?/g, ''),
-                        "TokenType": LexerTokenTypes.Controller,
-                        ControllerPath,
-                        Headers: null
-                        }
-                    }
-                    tokens.push(currentToken)
-                
-
-                if (splitCurrentValue.length == 1) {
-
-                    const controllervalue = value.replace(/[(,), 'controller', '@controller', \',\] \[ ]/ig, '').replace('@Controller(', '').replace('\'', '').replace(')', '')
-                    currentToken = {
-                            _id: generateTokenId(),
-                            KeyName: splitCurrentValue[0],
-                            KeyDataType: 'string',
-                            KeyValue: controllervalue,
-                            "TokenType": controllervalue.includes('/') || controllervalue.startsWith('/') ? LexerTokenTypes.Controller : LexerTokenTypes.ControllerPath,
-                            ControllerPath,
-                            Headers: null
-                        }
-
-                    
-                    tokens.push(currentToken)
-                }
-            }
-
-            //  }
-
-
-        });
+            currentToken = token
+            tokens.push(token)
+        }
 
 
     }

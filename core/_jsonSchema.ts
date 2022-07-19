@@ -1,7 +1,6 @@
 
-import { mkdirSync, writeFileSync } from "fs";
-import { join } from "path";
-import { Collection, Item, ItemGroup, Request, Variable } from "postman-collection";
+import { writeFileSync } from "fs";
+import { Collection } from "postman-collection";
 import { ApiDocsOptions } from "./ApiDocsOptions";
 import { JoinWith } from "./Helper/String.Helper";
 import { LexerTokens } from "./lexer/LexerTokens.type";
@@ -11,7 +10,7 @@ import { Swagger } from "./swagger.type";
 export class JsonSchema {
 
     constructor(private inputs: LexerTokens[], private options: ApiDocsOptions) {
-        // this.constructSwaggerObject()
+        this.constructSwaggerObject()
     }
     private jsonObject: Swagger = { "info": {}, paths: {} }
     public toJSON(): string {
@@ -155,180 +154,156 @@ export class JsonSchema {
     }
 
     public CreateCollection() {
-        // initialize a new instance of postman collection
-        let controllerValue: string = ''
-        const collection = new Collection({
-            info: {
-                "name": this.options.AppTitle + "_collection", "version": <string>this.options.version
-            }
-        })
-
-        if (this.options && this.options.BaseUrl) {
-            collection.variables.add(new Variable({
-                id: 'apiBaseUrl',
-                value: this.options.BaseUrl ? this.options.BaseUrl : JoinWith('/', <string>this.options.Host, <string>this.options.BasePath)
-            }))
+        const info = {
+            "name": this.options.AppTitle + "_Collection",
+            "version": <string>this.options.version
         }
-        const controllers = this.inputs.filter(x => x.ControllerName != null || x.ControllerName != '' || x.ControllerName != " ").map(x => { return x.ControllerName })
+        console.log(this.inputs)
 
-        controllers.forEach((v) => {
-            let itemgroup = new ItemGroup<Item>();
+        let items = [] // outer item
+        for (let t of this.inputs) {
+            const currentInput = t
+            let item: any = {} // inner items
 
-            if (v) {
+            if (t.Folder) {
+                let folders = t.Folder
+                let len = folders.length
+                while (len < folders.length) {
+                    let currentFolder = folders[len]
+                    
+                    
+                    len = len + 1
 
-                itemgroup['name'] = v as string
-                let inputs = this.inputs.filter(x => x.ControllerName?.toLocaleLowerCase() == v?.toLocaleLowerCase())
-                
-                for (let t of inputs) {
-
-                    let folderName: string = ''
-                    const currentInput = t
-
-                    let itemGroupItem: any = {}
-                    let item: any = {} // inner items
-
-
-
-                    if (t.TokenType.toUpperCase() == LexerTokenTypes.Controller.toUpperCase()) {
-                        folderName = t.KeyValue as string
-                        controllerValue = folderName
+                    let allParentElement: LexerTokens[] = []
+                    for (let lexer of this.inputs) {
+                        const _folders = t.Folder as string[];
+                        const firstElement = _folders[0]
+                        let indexOfCurrentFolder = _folders.indexOf(currentFolder)
+                        lexer.Folder = _folders.splice(indexOfCurrentFolder, 1)
+                        if (firstElement == currentFolder)
+                            allParentElement.push(lexer)
                     }
-                    // item['name'] = folderName
 
-                    //let request = new Request();
-                    if (t.RequestName) {
-                        //item["name"] = currentInput.RequestName
-                        //let request: any = {} 
-                        let request: any = {}
+                    items.push(...this.CreateFolder(currentFolder,allParentElement))
+                }
+            }
+            else {
+                const currentInput = t
 
-                        //  for(let t of tokenCollections) {
+                item["name"] = currentInput.RequestName
+                let request: any = {}
+                //  for(let t of tokenCollections) {
 
-                        if (t.TokenType.toUpperCase() == LexerTokenTypes.Method.toUpperCase()) {
-                            const methodPath: any = t.KeyValue
-                            request["name"] = t.RequestName
-                            item['name'] = t.RequestName
-                            let url = JoinWith('/', '/' + currentInput.ControllerPath.replace(/[\',\"]+/g, ''), methodPath["path"].replace(/[\',\"]+/g, ''))
-                            let urlParam = '';
-                            let queries = []
-                            let paramsvalue = []
-                            if (t.Query) {
-                                let query: any = t.Query
-                                let urlquery = '?'
-                                for (let s of Array.from(Object.keys(query))) {
-                                    urlquery += `${s}=${query[s].trim()}&`
-                                    queries.push({
-                                        key: s.trim(),
-                                        name: s.trim(),
-                                        value: query[s]
-                                    })
-                                }
+                if (t.TokenType.toUpperCase() == LexerTokenTypes.Method.toUpperCase()) {
+                    const methodPath: any = t.KeyValue
 
-                            }
-
-                            // currentInput.ControllerPath.replace(/[\',\"]+/g, '')
-                            if (t.Params) {
-                                let params: any = t.Params
-                                let urlquery = '/'
-                                for (let s of Array.from(Object.keys(params))) {
-                                    urlquery += `{{${s}}}`
-                                    paramsvalue.push(s)
-                                }
-                                urlParam += urlquery
-                            }
-                            const controllerPathSplitted: string[] = currentInput.ControllerPath.replace(/[\'\"]+/g, '').split(",")
-                            //console.log("currentKeyValue", controllerPathSplitted)
-                            //let fullMethodPath = JoinWith("/", currentInput.ControllerPath.replace(/[\',\"]+/g, ''), <string>this.options.BasePath?.trim(), (methodPath['path'] + urlParam).replace(/[\']+/g, ''))
-                            const controllerUrl:string = controllerPathSplitted.length > 1 ? controllerPathSplitted[1] : controllerPathSplitted[0]
-                            request['url'] = {
-                                protocol: "http",
-                                query: queries,
-                                path: [(methodPath['path'] + urlParam).replace(/[\']+/g, '')],
-                                //path:[fullMethodPath],
-                                host: JoinWith('', <string>this.options.Host?.trim(), '/', <string>this.options.BasePath?.trim() || '', '/', controllerUrl.trim() || ''),
-                                raw: '{{apiBaseUrl}}' + '/' + methodPath['path']
-                            }
-                            request['description'] = {
-                                content: t.Description,
-                                type: t.Consumes
-                            }
-                            request['method'] = methodPath['HttpMethod'],
-                            request['name'] = methodPath['RequestName']
-                            if (t.Body) {
-                                request['body'] = {
-                                    mode: "raw",
-                                    raw: JSON.stringify(t.Body),
-                                    description: {
-                                        type: "application/json",
-                                        content: "application/json"
-                                    },
-                                    "options": {
-                                        "raw": {
-                                            "language": "json"
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (t.FormData) {
-                                let _formData: any = t.FormData
-                                let formData = []
-                                for (let s of Array.from(Object.keys(_formData))) {
-                                    formData.push({
-                                        key: s,
-                                        name: s,
-                                        value: _formData[s]
-                                    })
-                                }
-
-                                request['body'] = {
-                                    formData
-                                }
-                            }
-
-                            if (t.FileType) {
-                                request['body'] = {
-                                    file: t.FileType
-                                }
-                            }
-                            if (t.Headers) {
-                                request['header'] = []
-                                let _header: any = t.Headers
-                                for (let s of Array.from(Object.keys(_header))) {
-                                    request.header.push({
-                                        key: s.trim().replace(/[\']+/g, ''),
-                                        name: s.trim().replace(/[\']+/g, ''),
-                                        value: _header[s].trim().replace(/[\']+/g, '')
-                                    })
-                                }
-                            }
+                    let url = JoinWith('/', '/' + currentInput.ControllerPath.replace(/[\',\"]+/g, ''), methodPath["path"].replace(/[\',\"]+/g, ''))
+                    let queries = []
+                    let paramsvalue = []
+                    if (t.Query) {
+                        let query: any = t.Query
+                        let urlquery = '?'
+                        for (let s of Array.from(Object.keys(query))) {
+                            urlquery += `${s}=${query[s]}&`
+                            queries.push({
+                                key: s,
+                                name: s,
+                                value: query[s]
+                            })
                         }
 
-                        item['request'] = request
+                    }
 
-                        const itemsBefore = itemgroup.items.filter(x => x.name.toLowerCase() == (t.RequestName?.toLowerCase()), null)
+                    if (t.Params) {
+                        let params: any = t.Params
+                        let urlquery = '/'
+                        for (let s of Array.from(Object.keys(params))) {
+                            urlquery += `{{${s}}}`
+                            paramsvalue.push(s)
 
-                        if (!(itemsBefore.length > 0)) {
-                            itemgroup.items.append(item)
+                        }
+                        // url += urlquery
+
+                    }
+                    request['url'] = {
+                        protocol: "http",
+                        query: queries,
+                        path: paramsvalue,
+                        host: this.options.Host,
+
+                    }
+                    request['description'] = t.Description
+                    request['method'] = methodPath['HttpMethod'],
+                        request['name'] = methodPath['RequestName']
+                    if (t.Body) {
+                        request['body'] = {
+                            mode: "raw",
+                            raw: JSON.stringify(t.Body),
+                            description: t.Description
+                        }
+                    }
+
+                    if (t.FormData) {
+                        let _formData: any = t.FormData
+                        let formData = []
+                        for (let s of Array.from(Object.keys(_formData))) {
+                            formData.push({
+                                key: s,
+                                name: s,
+                                value: _formData[s]
+                            })
                         }
 
+                        request['body'] = {
+                            formData
+                        }
+                    }
+
+                    if (t.FileType) {
+                        request['body'] = {
+                            file: t.FileType
+                        }
+                    }
+                    if (t.Headers) {
+                        request['header'] = []
+                        let _header: any = t.Headers
+                        for (let s of Array.from(Object.keys(_header))) {
+                            request.header.push({
+                                key: s,
+                                name: s,
+                                value: _header[s]
+                            })
+                        }
                     }
                 }
 
-                const isThereBefore = collection.items.filter(x => x.name == v, null)
-                if (!(isThereBefore.length > 0))
-                    collection.items.add(itemgroup)
+                item['request'] = request
+                item["description"] = {
+                    content: t.Description,
+                    type: t.Consumes
+                }
 
+                items.push(item)
             }
 
+            //const tokenCollections = this.inputs.filter(x=>x.KeyName.toLowerCase().includes('method'))
+
+
+
+
+            //   }
+
+
+
+
+        }
+        const collection = new Collection({
+            info,
+            item: items
         })
 
-        if (this.options.OutputDir) {
-            mkdirSync(this.options.OutputDir)
-        }
-
-        const outputpath:string = join(this.options.OutputDir || __dirname, this.options.CollectionName ? this.options.CollectionName + '.json' : collection.name + '.json')
-        // console.log("outpath", outputpath)
-        writeFileSync(outputpath, JSON.stringify(collection, null, 2))
+        writeFileSync(this.options && this.options.CollectionName ? this.options.CollectionName + '.json' : info.name + '.json',
+            JSON.stringify(collection, null, 2))
     }
 
     private constructSwaggerObject() {

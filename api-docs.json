@@ -1,9 +1,13 @@
 {
     "AppTitle":"Ussd Wallet funding",
     "version":"v1",
+    "CliVersion":"0.0.1",
     "Description":"App Description",
     "BaseUrl":"https://ussd.aellapp.com/",
     "Headers":{
         
-    }
+    },
+    "dirToIgnore":[".gitignore", "*.json"],
+    "dirToCrawl":".",
+    "OutpurDir":"samples"
 }

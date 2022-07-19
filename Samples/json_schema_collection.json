@@ -1,0 +1,286 @@
+{
+  "item": [
+    {
+      "id": "da690204-6c5d-49c4-929b-4d88f633771a",
+      "item": [
+        {
+          "name": "BankLisiting",
+          "request": {
+            "name": "BankLisiting",
+            "url": {
+              "protocol": "http",
+              "query": [
+                {
+                  "key": "pageIndex",
+                  "name": "pageIndex",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "name": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "path": [
+                "bank-listing"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/WalletController",
+              "raw": "{{apiBaseUrl}}/'bank-listing'"
+            },
+            "description": {
+              "content": "'returns list of banks in the system'"
+            },
+            "method": "GET"
+          }
+        },
+        {
+          "name": "getUssdString",
+          "request": {
+            "name": "getUssdString",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "ussd-string/{{userid}}"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/WalletController",
+              "raw": "{{apiBaseUrl}}/'ussd-string'"
+            },
+            "description": {
+              "type": [
+                "application/json",
+                "application/xml"
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"amount\":\"5000\",\"userid\":\"454\",\"bankCode\":\"322\"}",
+              "description": {
+                "type": "application/json",
+                "content": "application/json"
+              },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GetCustomerDetails",
+          "request": {
+            "name": "GetCustomerDetails",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "customer-details"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/WalletController",
+              "raw": "{{apiBaseUrl}}/'customer-details'"
+            },
+            "description": {
+              "type": [
+                "application/json",
+                "application/xml"
+              ]
+            },
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"customerRef\":\"''\"}",
+              "description": {
+                "type": "application/json",
+                "content": "application/json"
+              },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "header": [
+              {
+                "key": "accept",
+                "name": "accept",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      ],
+      "event": [],
+      "name": "WalletController"
+    },
+    {
+      "id": "b27e0989-808a-44c0-a4b5-6b38820d8662",
+      "item": [
+        {
+          "name": "Authenticate",
+          "request": {
+            "name": "Authenticate",
+            "url": {
+              "protocol": "http",
+              "query": [
+                {
+                  "key": "corpCode",
+                  "name": "corpCode",
+                  "value": "23"
+                },
+                {
+                  "key": "password",
+                  "name": "password",
+                  "value": "20"
+                }
+              ],
+              "path": [
+                "authenticate"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
+              "raw": "{{apiBaseUrl}}/authenticate"
+            },
+            "description": {},
+            "method": "POST"
+          }
+        },
+        {
+          "name": "ResolveAccount",
+          "request": {
+            "name": "ResolveAccount",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "resolveAccount"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
+              "raw": "{{apiBaseUrl}}/'resolveAccount'"
+            },
+            "description": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json",
+                "content": "application/json"
+              },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TransferFund",
+          "request": {
+            "name": "TransferFund",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "transferFund"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
+              "raw": "{{apiBaseUrl}}/'transferFund'"
+            },
+            "description": {},
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json",
+                "content": "application/json"
+              },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "VerifyReference",
+          "request": {
+            "name": "VerifyReference",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "verifyReference/{{verifyReference}}"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
+              "raw": "{{apiBaseUrl}}/verifyReference"
+            },
+            "description": {},
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "authCode",
+                "name": "authCode",
+                "value": "534345235"
+              }
+            ]
+          }
+        },
+        {
+          "name": "GetBalnce",
+          "request": {
+            "name": "GetBalnce",
+            "url": {
+              "protocol": "http",
+              "query": [],
+              "path": [
+                "getBalance/{{accountNumber}}"
+              ],
+              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
+              "raw": "{{apiBaseUrl}}/'getBalance'"
+            },
+            "description": {},
+            "method": "GET",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bank_code\":\"23\",\" account_number\":\"24\",\" bank_id\":\"20\"}",
+              "description": {
+                "type": "application/json",
+                "content": "application/json"
+              },
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "event": [],
+      "name": "FirstBank"
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "id": "apiBaseUrl",
+      "type": "any",
+      "value": "https://ussd.aellapp.com"
+    }
+  ],
+  "info": {
+    "_postman_id": "cd4c3dbf-b031-4dbe-aab6-ef780f9f8e64",
+    "name": "json_schema_collection",
+    "version": {},
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  }
+}

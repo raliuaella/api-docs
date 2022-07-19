@@ -1,206 +1,158 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+exports.__esModule = true;
 exports.lexer = void 0;
-const Enum_Helper_1 = require("../Helper/Enum.Helper");
-const String_Helper_1 = require("../Helper/String.Helper");
-const LexerTokenTypes_1 = require("./LexerTokenTypes");
-const lexer = (inputs) => {
-    const lines = [...inputs];
+var String_Helper_1 = require("../Helper/String.Helper");
+var LexerTokenTypes_1 = require("./LexerTokenTypes");
+var lexer = function (inputs) {
+    var lines = __spreadArray([], inputs, true);
     //console.log("lines length " + lines.length)
-    let counter = 0;
-    let tokens = [];
-    let identifiersList = (0, Enum_Helper_1.EnumToList)();
-    let tokenTypeList = (0, Enum_Helper_1.EnumToList)();
-    // console.log("tokenTypeList ", tokenTypeList)
-    let ControllerPath = '';
-    let currentToken;
-    while (counter < lines.length) {
-        let currentLine = lines[counter].trim();
+    var newLines = __spreadArray([], (0, String_Helper_1.alllinesThatBeginWith)(/^\/\/\//ig, lines), true);
+    // console.log('neLines ', newLines)
+    lines = __spreadArray([], newLines, true);
+    var allTokenValues = (0, String_Helper_1.getAllTokenValues)(lines);
+    console.log(allTokenValues);
+    //newLinesRegex.test()
+    var counter = 0;
+    var tokens = [];
+    // let identifiersList = EnumToList<Keywords>()
+    // let tokenTypeList = EnumToList<LexerTokenTypes>()
+    // // console.log("tokenTypeList ", tokenTypeList)
+    // let ControllerPath: string = ''
+    var currentToken = { _id: '', KeyDataType: '', KeyValue: '', KeyName: '', TokenType: '', ControllerPath: '' };
+    var controllerName = '';
+    while (counter < allTokenValues.length) {
+        var currentLine = allTokenValues[counter];
         //const splitByQuote = currentLine.split('\'')
         //currentLine = currentLine[0] == '\'' 
         counter += 1;
-        currentLine = currentLine.substring(4, currentLine.length).trim();
-        //console.log("current line " + currentLine)
-        // if (!startWithTripleSlash(currentLine))
-        //     continue;
-        if (currentLine == "\r\n")
-            continue;
-        const letCurrentLineSplit = currentLine.split(" ");
-        //console.log("splitted line ", letCurrentLineSplit)
-        letCurrentLineSplit.forEach((value) => {
-            console.log("current value ", value);
-            // const identifierFound: boolean = identifiersList.filter(x => x.name == value).length > 0;
-            //  if (identifierFound) {
-            if (value.includes("MethodName") || value.includes("@Method")) {
-                const splitCurrentValue = value.split("=");
-                //console.log("splt" , splitCurrentValue)
-                const putPostMethod = ["POST", "PUT"];
-                // console.log("spr", splitCurrentValue)
-                if (splitCurrentValue.length > 2)
-                    throw new Error("method not properly formated");
-                //                                0       1   2           3           4       5
-                // format here is MethodName=(RequestName, GET,someValue, query=null, params, headers)
-                if (splitCurrentValue.length == 2) {
-                    // (GET, 'wallet/fund', {userid=2,location=en}, {})
-                    const secondValue = splitCurrentValue[1].replace('(', '').replace(')', '');
-                    const methodSpecificationSplitted = secondValue.split(";");
-                    // console.log("spr", methodSpecificationSplitted)
-                    const m = methodSpecificationSplitted;
-                    //const notFound: boolean = tokens.filter(x => x.RequestName == m[0]).length == 0
-                    // (Name, POST, 'wallet/fund', {userid=2,location=en}, {}, {userId: 23}, {})
-                    currentToken = {
-                        _id: (0, String_Helper_1.generateTokenId)(),
-                        KeyName: splitCurrentValue[0],
-                        KeyDataType: 'object',
-                        KeyValue: {
-                            httpMethod: m[1],
-                            path: m[2],
-                            query: m[3],
-                            params: m[4],
-                            body: m[5]
-                        },
-                        RequestName: m[0],
-                        ControllerPath,
-                        TokenType: LexerTokenTypes_1.LexerTokenTypes.Method,
-                        Headers: m[6]
-                    };
-                    tokens.push(currentToken);
-                    // }
-                    // }
-                }
-                if (splitCurrentValue.length == 1) {
-                    // @Method(HTTPMETHOD, 'name/path', query, params)
-                    //              0       1          2            3                   4   5
-                    // @Method(RequestName, GET, 'wallet/fund', {userid=2,location=en}, {}, {})
-                    const methodNameValue = splitCurrentValue[0].replace('@Method', '').replace('(', '').replace('(', '');
-                    const methodSpecificationSplitted = methodNameValue.split(";");
-                    const m = methodSpecificationSplitted;
-                    // const notFound: boolean = tokens.filter(x => x.RequestName == m[0]).length == 0
-                    //              0         1     2               3                   4   5
-                    // @Method(RequestName, GET, 'wallet/fund', {userid=2,location=en}, {}, {})
-                    currentToken = {
-                        _id: (0, String_Helper_1.generateTokenId)(),
-                        KeyName: splitCurrentValue[0],
-                        KeyDataType: 'object',
-                        KeyValue: {
-                            httpMethod: m[1],
-                            path: m[2],
-                            query: m[3],
-                            params: m[4],
-                            body: m[5]
-                        },
-                        RequestName: m[0],
-                        TokenType: LexerTokenTypes_1.LexerTokenTypes.Method,
-                        Headers: m[6],
-                        ControllerPath
-                    };
-                    tokens.push(currentToken);
-                }
-            }
-            if (value.toLowerCase().includes("Consume") || value.toLowerCase().includes("@Consumes")) {
-                ///@Consumes=([application/json, application/xml])
-                /// Produces=([application/json, text/csv])
-                const splitCurrentValue = value.split("=");
-                if (splitCurrentValue.length == 2) {
-                    let consumeValue = splitCurrentValue[1].replace("(", "").replace("(", "").replace("[", "").replace("[", "");
-                    console.log("consume value", consumeValue);
-                    if (currentToken) {
-                        currentToken.Consumes = [];
-                        const splitConsumes = consumeValue.trim().split(",");
-                        splitConsumes.forEach((v) => {
-                            var _a;
-                            (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v);
-                        });
-                    }
-                }
-                if (splitCurrentValue.length < 2) {
-                    let consumeValue = splitCurrentValue[1].replace(/[(,),\',@,Consume,Consumes, @consume, @consumes, [,\]]+/ig, '');
-                    if (currentToken) {
-                        currentToken.Consumes = [];
-                        const splitConsumes = consumeValue.trim().split(",");
-                        splitConsumes.forEach((v) => {
-                            var _a;
-                            (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v);
-                        });
-                    }
-                }
-                const indexOfCurrentToken = tokens.findIndex(x => x._id == currentToken._id);
-                tokens.splice(indexOfCurrentToken, 1, currentToken);
-            }
-            if (value.toLowerCase().includes("Produces") || value.toLowerCase().includes("@Produces")) {
-                ///@Consumes=([application/json, application/xml])
-                /// Produces=([application/json, text/csv])
-                const splitCurrentValue = value.split("=");
-                if (splitCurrentValue.length == 2) {
-                    let consumeValue = splitCurrentValue[1].replace(/[(,), \],\[]+/ig, "").replace("(", "").replace("[", "").replace("[", "");
-                    console.log("produce value", consumeValue);
-                    if (currentToken) {
-                        currentToken.Produces = [];
-                        const splitConsumes = consumeValue.trim().split(",");
-                        splitConsumes.forEach((v) => {
-                            var _a;
-                            (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v);
-                        });
-                    }
-                }
-                if (splitCurrentValue.length < 2) {
-                    let consumeValue = splitCurrentValue[1].replace(/[(,),\',@,Product,Produces, @produce, @produces, [,\]]+/ig, '');
-                    if (currentToken) {
-                        currentToken.Produces = [];
-                        const splitConsumes = consumeValue.trim().split(",");
-                        splitConsumes.forEach((v) => {
-                            var _a;
-                            (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v);
-                        });
-                    }
-                }
-                const indexOfCurrentToken = tokens.findIndex(x => x._id == currentToken._id);
-                tokens.splice(indexOfCurrentToken, 1, currentToken);
-            }
-            if (value.includes("ControllerName") || value.includes('@Controller')) {
-                const splitCurrentValue = value.split("=");
-                // console.log("spr", splitCurrentValue)
-                if (splitCurrentValue.length == 2) {
-                    if (splitCurrentValue[1].startsWith("/") || splitCurrentValue.includes("/"))
-                        throw new Error("the pattern ControllerName=value cannot start with or be in url path format, please use @Controller pattern instead");
-                    ControllerPath = splitCurrentValue[1];
-                    currentToken = {
-                        _id: (0, String_Helper_1.generateTokenId)(),
-                        KeyName: splitCurrentValue[0],
-                        KeyDataType: 'string',
-                        KeyValue: splitCurrentValue[1].replace('(', '').replace(')', '').replace(/[\']=?/g, ''),
-                        "TokenType": LexerTokenTypes_1.LexerTokenTypes.Controller,
-                        ControllerPath,
-                        Headers: null
-                    };
-                }
-                tokens.push(currentToken);
-                if (splitCurrentValue.length == 1) {
-                    const controllervalue = value.replace(/[(,), 'controller', '@controller', \',\] \[ ]/ig, '').replace('@Controller(', '').replace('\'', '').replace(')', '');
-                    currentToken = {
-                        _id: (0, String_Helper_1.generateTokenId)(),
-                        KeyName: splitCurrentValue[0],
-                        KeyDataType: 'string',
-                        KeyValue: controllervalue,
-                        "TokenType": controllervalue.includes('/') || controllervalue.startsWith('/') ? LexerTokenTypes_1.LexerTokenTypes.Controller : LexerTokenTypes_1.LexerTokenTypes.ControllerPath,
-                        ControllerPath,
-                        Headers: null
-                    };
-                    tokens.push(currentToken);
-                }
-            }
-            //  }
-        });
+        var type = currentLine.type, value = currentLine.value;
+        type = type.toUpperCase();
+        //console.log("type is", type)
+        //console.log("identify is ", LexerTokenTypes.Controller.toString().toUpperCase())
+        var _id = (0, String_Helper_1.generateTokenId)();
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Controller.toString().toUpperCase()) {
+            var controllervalue = value.split(',');
+            controllerName = controllervalue[0].trim();
+            currentToken = {
+                _id: _id,
+                KeyName: type,
+                KeyDataType: typeof (String).name,
+                KeyValue: controllervalue[0].replace(/[\'\"]+/g, ''),
+                ControllerPath: value.trim().replace(/[\'\"]+/g, ''),
+                TokenType: LexerTokenTypes_1.LexerTokenTypes.Controller,
+                ControllerName: controllerName
+            };
+            tokens.push(currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Params.toString().toUpperCase()) {
+            var KeyValue = (0, String_Helper_1.simpleStringToObject)(value);
+            currentToken.Params = KeyValue;
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Consumes.toString().toUpperCase()) {
+            var KeyValue = value.split(",");
+            currentToken.Consumes = [];
+            KeyValue.forEach(function (v) {
+                var _a;
+                (_a = currentToken.Consumes) === null || _a === void 0 ? void 0 : _a.push(v.trim().replace('[', '').replace(']', ''));
+            });
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Folder.toString().toUpperCase()) {
+            var KeyValue = value.split(",");
+            currentToken.Folder = [];
+            KeyValue.forEach(function (v) {
+                var _a;
+                (_a = currentToken.Folder) === null || _a === void 0 ? void 0 : _a.push(v.trim().replace('[', '').replace(']', ''));
+            });
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Description.toString().toUpperCase()) {
+            currentToken.Description = value;
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Produces.toString().toUpperCase()) {
+            var KeyValue = value.split(",");
+            currentToken.Produces = [];
+            KeyValue.forEach(function (v) {
+                var _a;
+                (_a = currentToken.Produces) === null || _a === void 0 ? void 0 : _a.push(v.trim().replace('[', '').replace(']', ''));
+            });
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Headers.toString().toUpperCase()) {
+            var KeyValue = (0, String_Helper_1.simpleStringToObject)(value);
+            currentToken.Headers = KeyValue;
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Query.toString().toUpperCase()) {
+            var KeyValue = (0, String_Helper_1.simpleStringToObject)(value);
+            //console.log("keyValue ", KeyValue)
+            currentToken.Query = KeyValue;
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Body.toString().toUpperCase()) {
+            var KeyValue = (0, String_Helper_1.simpleStringToObject)(value);
+            currentToken.Body = KeyValue;
+            var indexOfTokenToUpdate = tokens.findIndex(function (x) { return x._id == currentToken._id; });
+            //tokens.push(token)
+            tokens.splice(indexOfTokenToUpdate, 1, currentToken);
+        }
+        if (type == LexerTokenTypes_1.LexerTokenTypes.Method.toString().toUpperCase()) {
+            var methodKeyValue = value.split(";");
+            if (methodKeyValue.length != 3)
+                throw new Error("parameter @Method/Method is not properly formatted");
+            var token = {
+                _id: _id,
+                RequestName: methodKeyValue[0],
+                KeyName: type,
+                KeyDataType: typeof (Object).name,
+                KeyValue: {
+                    RequestName: methodKeyValue[0],
+                    HttpMethod: methodKeyValue[1],
+                    path: methodKeyValue[2]
+                },
+                ControllerName: controllerName,
+                TokenType: LexerTokenTypes_1.LexerTokenTypes.Method,
+                ControllerPath: currentToken.ControllerPath
+            };
+            currentToken = token;
+            tokens.push(token);
+        }
     }
     return tokens;
 };
 exports.lexer = lexer;
-const startWithTripleSlash = (text) => {
+var startWithTripleSlash = function (text) {
     return text.startsWith('///');
 };
-const splitLine = (text, matchAll = true) => {
+var splitLine = function (text, matchAll) {
+    if (matchAll === void 0) { matchAll = true; }
     return text.split(/[\t\v\s]/);
 };
-const splitLineByEqual = (text) => {
+var splitLineByEqual = function (text) {
     return text.split("=");
 };

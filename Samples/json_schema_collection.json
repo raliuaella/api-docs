@@ -1,7 +1,7 @@
 {
   "item": [
     {
-      "id": "da690204-6c5d-49c4-929b-4d88f633771a",
+      "id": "fa9ab079-df48-4e4a-b38b-7ca99c30d8c4",
       "item": [
         {
           "name": "BankLisiting",
@@ -115,7 +115,7 @@
       "name": "WalletController"
     },
     {
-      "id": "b27e0989-808a-44c0-a4b5-6b38820d8662",
+      "id": "8b226280-f5ac-42e1-8edc-0860600351e9",
       "item": [
         {
           "name": "Authenticate",
@@ -140,23 +140,6 @@
               ],
               "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
               "raw": "{{apiBaseUrl}}/authenticate"
-            },
-            "description": {},
-            "method": "POST"
-          }
-        },
-        {
-          "name": "ResolveAccount",
-          "request": {
-            "name": "ResolveAccount",
-            "url": {
-              "protocol": "http",
-              "query": [],
-              "path": [
-                "resolveAccount"
-              ],
-              "host": "ussd.aellapp.com/api/v2/api/transfer/v2",
-              "raw": "{{apiBaseUrl}}/'resolveAccount'"
             },
             "description": {},
             "method": "POST",
@@ -278,7 +261,7 @@
     }
   ],
   "info": {
-    "_postman_id": "cd4c3dbf-b031-4dbe-aab6-ef780f9f8e64",
+    "_postman_id": "cc82d510-33c5-4f36-bc65-80e74164dd92",
     "name": "json_schema_collection",
     "version": {},
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"

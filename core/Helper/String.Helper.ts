@@ -67,6 +67,21 @@ export const simpleStringToObject = (input: string): object => {
 
     return object
 }
+
+export const methodDefinition = (value:any, token:any, type:any): any => {
+    let currentToken = token
+    let valueMethodSplitted = value.split(";")
+            if(valueMethodSplitted.length < 2 || valueMethodSplitted.length > 2)
+                throw new Error("method not properly defined")
+            let oldTokenValue: any = currentToken.KeyValue as object
+            oldTokenValue["HttpMethod"] = type
+            oldTokenValue["path"] = valueMethodSplitted[1]
+            oldTokenValue["RequestName"] = valueMethodSplitted[0];
+
+            currentToken.KeyValue = oldTokenValue
+            return currentToken
+            
+}
 export const getAllTokenValues = (inputs: string[]): TokenValue[] => {
    // console.log("allTokenInput ", inputs)
    // const matchString = /^['controller', '@controller', 'method', '@method', 'produces', '@produces', 'consumes', '@consumes', '@folder']$/ig

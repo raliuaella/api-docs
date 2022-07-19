@@ -57,11 +57,6 @@ Method can come in two forms <br />
 (a) @Method({MethodName};{HttpMethod};{EndpointPath})
 (b) Method=({MethodName};{HttpMethod};{EndpointPath}) <br />
 
-If you follow above pattern, then the values provided inside the parenthesis will be splitted by <strong>; (comma)</strong>. Otherwise, you can specify your endpoint method in the following <br />
-
-<strong>@{Httpmethod>}({RequestName};{EndpointPath})
-@MethodName({Requestname}) </strong>
-HttpMethod can be any of the following [POST, GET, HEAD, PUT, OPTIONS, DELETE etc], if you define your endpoint <br />
 
 <strong>@Query({pageIndex:1})</strong> @Query is use to specify query string of your endpoint <br />
 <strong>@Params({})</strong> @Params is used to specify route params on your endpoint
@@ -72,7 +67,7 @@ HttpMethod can be any of the following [POST, GET, HEAD, PUT, OPTIONS, DELETE et
 ## Typical Example
 See below an example of how to use the attributes explained above
 ```cli
-/// @Controller(WalletController, 'api/wallet')
+    /// @Controller(WalletController, 'api/wallet')
   export class WalletFundingController {
    // private serviceName: string;
     constructor() {
@@ -80,10 +75,10 @@ See below an example of how to use the attributes explained above
     }
 
      /// Method=BankLisiting;GET;'bank-listing')
-    /// @Produces([application/json])
-    /// Query({pageIndex:1,pageSize:10})
-    /// @Description('returns list of banks in the system')
-    /// @Folder([Bank, Listing]) for version 2.0
+     /// @Produces([application/json])
+     /// Query({pageIndex:1,pageSize:10})
+     /// @Description('returns list of banks in the system')
+     /// @Folder([Bank, Listing]) for version 2.0
     async BankShortCodeListing() {
        
      // return SuccessResponse(res, await this.service.ListBanks(), this.serviceName);

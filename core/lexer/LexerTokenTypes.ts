@@ -12,5 +12,12 @@ export enum LexerTokenTypes {
         Consumes="Consumes",
         Produces="Produces",
         Description="Description",
-        Folder="Folder"
+        Folder="Folder",
+        MethodName="MethodName",
+        Post="Post",
+        Get="Get",
+        Head="Head",
+        Delete="Delete",
+        Put="Put",
+        Options="Options"
 }

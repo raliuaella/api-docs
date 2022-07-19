@@ -1,6 +1,6 @@
 import { Console } from "console";
 import { EnumToList } from "../Helper/Enum.Helper";
-import { alllinesThatBeginWith, generateTokenId, getAllTokenValues, simpleStringToObject, unique } from "../Helper/String.Helper";
+import { alllinesThatBeginWith, generateTokenId, getAllTokenValues, methodDefinition, simpleStringToObject, unique } from "../Helper/String.Helper";
 import { Identify } from "./identifier.enum";
 import { LexerTokens, TokenValue } from "./LexerTokens.type";
 import { LexerTokenTypes } from "./LexerTokenTypes";
